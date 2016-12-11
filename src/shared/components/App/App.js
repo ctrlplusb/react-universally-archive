@@ -5,7 +5,7 @@ import { Match, Miss } from 'react-router';
 import Helmet from 'react-helmet';
 import { CodeSplit } from 'code-split-component';
 import 'normalize.css/normalize.css';
-import './globals.css';
+import './globals.scss';
 import Error404 from './Error404';
 import Header from './Header';
 import htmlPageConfig from '../../../../config/public/htmlPage';
