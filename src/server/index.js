@@ -5,8 +5,10 @@
 // maps will give us nice stack traces.
 import 'source-map-support/register';
 
-import express from 'express';
-import compression from 'compression';
+import Koa from 'koa';
+import mount from 'koa-mount';
+import compression from 'koa-compress';
+import serve from 'koa-static';
 import { resolve as pathResolve } from 'path';
 import appRootDir from 'app-root-dir';
 import reactApplication from './middleware/reactApplication';
@@ -18,13 +20,10 @@ import projConfig from '../../config/private/project';
 import envConfig from '../../config/private/environment';
 
 // Create our express based server.
-const app = express();
-
-// Don't expose any software information to potential hackers.
-app.disable('x-powered-by');
+const app = new Koa();
 
 // Security middlewares.
-app.use(...security);
+app.use(security);
 
 // Gzip compress the responses.
 app.use(compression());
@@ -35,21 +34,20 @@ app.use(compression());
 // Note: the service worker needs to be served from the http root of your
 // application for it to work correctly.
 if (process.env.NODE_ENV === 'production') {
-  app.get(`/${projConfig.serviceWorker.fileName}`, serviceWorker);
+  app.use(mount(`/${projConfig.serviceWorker.fileName}`, serviceWorker));
 }
 
 // Configure serving of our client bundle.
-app.use(projConfig.bundles.client.webPath, clientBundle);
+app.use(mount(projConfig.bundles.client.webPath, clientBundle));
 
 // Configure static serving of our "public" root http path static files.
 // Note: these will be served off the root (i.e. '/') of our application.
-app.use(express.static(pathResolve(appRootDir.get(), projConfig.publicAssetsPath)));
-
+app.use(mount('/', serve(pathResolve(appRootDir.get(), projConfig.publicAssetsPath))));
 // The React application middleware.
-app.get('*', reactApplication);
+app.use(mount('/', reactApplication));
 
 // Error Handler middlewares.
-app.use(...errorHandlers);
+app.use(errorHandlers);
 
 // Create an http listener for our express app.
 const listener = app.listen(envConfig.port, envConfig.host, () =>

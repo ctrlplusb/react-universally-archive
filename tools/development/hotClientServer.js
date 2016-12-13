@@ -1,8 +1,8 @@
 /* @flow */
 
-import express from 'express';
-import createWebpackMiddleware from 'webpack-dev-middleware';
-import createWebpackHotMiddleware from 'webpack-hot-middleware';
+import Koa from 'koa';
+import { devMiddleware as createWebpackMiddleware, hotMiddleware as createWebpackHotMiddleware } from 'koa-webpack-middleware';
+// import createWebpackHotMiddleware from 'webpack-hot-middleware';
 import ListenerManager from './listenerManager';
 import { log } from '../utils';
 
@@ -11,7 +11,7 @@ class HotClientServer {
   listenerManager: ListenerManager;
 
   constructor(compiler : Object) {
-    const app = express();
+    const app = new Koa();
 
     const httpPathRegex = /^https?:\/\/(.*):([\d]{1,5})/i;
     const httpPath = compiler.options.output.publicPath;

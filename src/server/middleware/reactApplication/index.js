@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { $Request, $Response, Middleware } from 'express';
+import type { KoaContext as $KoaContext } from 'koa-flow-declarations/KoaContext';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ServerRouter, createServerRenderContext } from 'react-router';
@@ -14,13 +14,15 @@ import envConfig from '../../../../config/private/environment';
  * An express middleware that is capabable of service our React application,
  * supporting server side rendering of the application.
  */
-function reactApplicationMiddleware(request: $Request, response: $Response) {
+async function reactApplicationMiddleware(ctx: $KoaContext, next: Function) {
+  const { request, response, state } = ctx;
+
   // We should have had a nonce provided to us.  See the server/index.js for
   // more information on what this is.
-  if (typeof response.locals.nonce !== 'string') {
+  if (typeof state.nonce !== 'string') {
     throw new Error('A "nonce" value has not been attached to the response');
   }
-  const nonce = response.locals.nonce;
+  const nonce = state.nonce;
 
   // It's possible to disable SSR, which can be useful in development mode.
   // In this case traditional client side only rendering will occur.
@@ -37,7 +39,7 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     response.status(200).send(html);
     return;
   }
-
+  
   // First create a context for <ServerRouter>, which will allow us to
   // query for the results of the render.
   const reactRouterContext = createServerRenderContext();
@@ -77,21 +79,21 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
   // Check if the render result contains a redirect, if so we need to set
   // the specific status and redirect header and end the response.
   if (renderResult.redirect) {
-    response.status(301).setHeader('Location', renderResult.redirect.pathname);
-    response.end();
+    response.status = 301;
+    response.header.location = renderResult.redirect.pathname;
+    // response.end();
     return;
   }
 
-  response
-    .status(
-      renderResult.missed
-        // If the renderResult contains a "missed" match then we set a 404 code.
-        // Our App component will handle the rendering of an Error404 view.
-        ? 404
-        // Otherwise everything is all good and we send a 200 OK status.
-        : 200,
-    )
-    .send(html);
+  response.status = renderResult.missed
+    // If the renderResult contains a "missed" match then we set a 404 code.
+    // Our App component will handle the rendering of an Error404 view.
+    ? 404
+    // Otherwise everything is all good and we send a 200 OK status.
+    : 200;
+  response.body = html;
+
+  await next();
 }
 
-export default (reactApplicationMiddleware : Middleware);
+export default (reactApplicationMiddleware : Function);
