@@ -8,11 +8,12 @@ import 'normalize.css/normalize.css';
 import './globals.css';
 import Error404 from './Error404';
 import Header from './Header';
+import Padded from '../lib/layout/Padded';
 import htmlPageConfig from '../../../../config/public/htmlPage';
 
 function App() {
   return (
-    <div style={{ padding: '10px' }}>
+    <Padded>
       {/*
         All of the following will be injected into our page header.
         @see https://github.com/nfl/react-helmet
@@ -48,7 +49,7 @@ function App() {
       />
 
       <Miss component={Error404} />
-    </div>
+    </Padded>
   );
 }
 

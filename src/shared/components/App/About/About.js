@@ -2,10 +2,11 @@
 
 import React from 'react';
 import Helmet from 'react-helmet';
+import Centered from '../../lib/layout/Centered';
 
 function About() {
   return (
-    <div style={{ textAlign: 'center' }}>
+    <Centered>
       <Helmet title="About" />
 
       Produced with ❤️
@@ -14,7 +15,7 @@ function About() {
       <a href="https://twitter.com/controlplusb" target="_blank" rel="noopener noreferrer">
         Sean Matheson
       </a>
-    </div>
+    </Centered>
   );
 }
 

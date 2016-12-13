@@ -2,13 +2,14 @@
 
 import React from 'react';
 import { Link } from 'react-router';
+import HorizontalList from '../../../lib/layout/HorizontalList';
 
 function Menu() {
   return (
-    <ul style={{ marginTop: '1rem' }}>
-      <li><Link to="/">Home</Link></li>
-      <li><Link to="/about">About</Link></li>
-    </ul>
+    <HorizontalList>
+      <HorizontalList.Item><Link to="/">Home</Link></HorizontalList.Item>
+      <HorizontalList.Item><Link to="/about">About</Link></HorizontalList.Item>
+    </HorizontalList>
   );
 }
 

@@ -37,11 +37,12 @@ type Args = {
   initialState?: Object,
   nonce: string,
   helmet?: Head,
+  styles?: string,
   codeSplitState?: { chunks: Array<string>, modules: Array<string> },
 };
 
 export default function generateHTML(args: Args) {
-  const { app, initialState, nonce, helmet, codeSplitState } = args;
+  const { app, initialState, nonce, helmet, codeSplitState, styles } = args;
 
   // The chunks that we need to fetch the assets (js/css) for and then include
   // said assets as script/style tags within our html.
@@ -79,6 +80,7 @@ export default function generateHTML(args: Args) {
         ${helmet ? helmet.meta.toString() : ''}
         ${helmet ? helmet.link.toString() : ''}
         ${styleTags(assetsForRender.css)}
+        ${styles || ''}
         ${helmet ? helmet.style.toString() : ''}
       </head>
       <body>

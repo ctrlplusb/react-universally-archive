@@ -5,6 +5,8 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ServerRouter, createServerRenderContext } from 'react-router';
 import { CodeSplitProvider, createRenderContext } from 'code-split-component';
+import Styletron from 'styletron-server';
+import { StyletronProvider } from 'styletron-react';
 import Helmet from 'react-helmet';
 import generateHTML from './generateHTML';
 import App from '../../../shared/components/App';
@@ -46,12 +48,17 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
   // to query which chunks/modules were used during the render process.
   const codeSplitContext = createRenderContext();
 
+  // Create a Styletron instance
+  const styletron = new Styletron();
+
   // Create our application and render it into a string.
   const app = renderToString(
     <CodeSplitProvider context={codeSplitContext}>
-      <ServerRouter location={request.url} context={reactRouterContext}>
-        <App />
-      </ServerRouter>
+      <StyletronProvider styletron={styletron}>
+        <ServerRouter location={request.url} context={reactRouterContext}>
+          <App />
+        </ServerRouter>
+      </StyletronProvider>
     </CodeSplitProvider>,
   );
 
@@ -69,6 +76,8 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     // html, and then the client bundle can use this data to know which chunks/
     // modules need to be rehydrated prior to the application being rendered.
     codeSplitState: codeSplitContext.getState(),
+    // Get the styletron generated styles for our rendered React application.
+    styles: styletron.getStylesheetsHtml(),
   });
 
   // Get the render result from the server render context.
