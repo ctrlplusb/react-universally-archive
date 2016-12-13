@@ -9,8 +9,8 @@ import { ApolloProvider, renderToStringWithData } from 'react-apollo';
 import { CodeSplitProvider, createRenderContext } from 'code-split-component';
 import Helmet from 'react-helmet';
 import generateHTML from './generateHTML';
+import DemoApp from '../../../shared/components/DemoApp';
 import configureStore from '../../../shared/redux/configureStore';
-import App from '../../../shared/components/App';
 import envConfig from '../../../../config/private/environment';
 
 /**
@@ -73,7 +73,7 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     <CodeSplitProvider context={codeSplitContext}>
       <ServerRouter location={request.url} context={reactRouterContext}>
         <ApolloProvider store={store} client={apolloClient}>
-          <App />
+          <DemoApp />
         </ApolloProvider>
       </ServerRouter>
     </CodeSplitProvider>
@@ -87,7 +87,7 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     // Generate the html response.
     const html = generateHTML({
       // Provide the rendered React application as a string.
-      app: reactAppString,
+      reactAppString,
       // Nonce which allows us to safely declare inline scripts.
       nonce,
       // Running this gets all the helmet properties (e.g. headers/scripts/title etc)
@@ -99,7 +99,7 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
       // modules need to be rehydrated prior to the application being rendered.
       codeSplitState: codeSplitContext.getState(),
       // The initial Apollo/Redux state.
-      initialState: apolloClient.store.getState()[apolloClient.reduxRootKey].data,
+      initialState: apolloClient.store.getState(),
     });
 
     // Get the render result from the server render context.

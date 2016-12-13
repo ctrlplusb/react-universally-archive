@@ -9,7 +9,7 @@ import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import configureStore from '../shared/redux/configureStore';
 import ReactHotLoader from './components/ReactHotLoader';
-import App from '../shared/components/App';
+import DemoApp from '../shared/components/DemoApp';
 
 // Create the apollo graphql client.
 const apolloClient = new ApolloClient();
@@ -56,13 +56,13 @@ if (process.env.NODE_ENV === 'development' && module.hot) {
   module.hot.accept('./index.js');
   // Any changes to our App will cause a hotload re-render.
   module.hot.accept(
-    '../shared/components/App',
-    () => renderApp(require('../shared/components/App').default),
+    '../shared/components/DemoApp',
+    () => renderApp(require('../shared/components/DemoApp').default),
   );
 }
 
 // Execute the first render of our app.
-renderApp(App);
+renderApp(DemoApp);
 
 // This registers our service worker for asset caching and offline support.
 // Keep this as the last item, just in case the code execution failed (thanks

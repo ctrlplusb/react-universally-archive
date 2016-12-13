@@ -3,7 +3,7 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import reducers from '../reducers';
 
-function configureStore(apolloClient : Object) {
+function configureStore(apolloClient : Object, initialState? : Object) {
   const enhancers = compose(
     // Middleware store enhancer.
     applyMiddleware(
@@ -32,6 +32,7 @@ function configureStore(apolloClient : Object) {
         { apollo: apolloClient.reducer() },
       ),
     ),
+    initialState,
     enhancers,
   );
 
