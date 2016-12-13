@@ -33,17 +33,16 @@ function scriptTags(jsFilePaths : Array<string>) {
 }
 
 type Args = {
-  app?: string,
-  css?: any,
-  ids?: any,
+  reactAppString?: string,
   initialState?: Object,
   nonce: string,
   helmet?: Head,
   codeSplitState?: { chunks: Array<string>, modules: Array<string> },
+  glamor? : { css: string, ids: any },
 };
 
 export default function generateHTML(args: Args) {
-  const { app, css, ids, initialState, nonce, helmet, codeSplitState } = args;
+  const { reactAppString, initialState, nonce, helmet, codeSplitState, glamor } = args;
 
   // The chunks that we need to fetch the assets (js/css) for and then include
   // said assets as script/style tags within our html.
@@ -82,10 +81,10 @@ export default function generateHTML(args: Args) {
         ${helmet ? helmet.link.toString() : ''}
         ${styleTags(assetsForRender.css)}
         ${helmet ? helmet.style.toString() : ''}
-        <style>${css}</style>
+        <style>${glamor ? glamor.css : ''}</style>
       </head>
       <body>
-        <div id='app'>${app || ''}</div>
+        <div id='app'>${reactAppString || ''}</div>
         ${
           // Bind the initial application state based on the server render
           // so the client can register the correct initial state for the view.
@@ -117,8 +116,8 @@ export default function generateHTML(args: Args) {
             ? scriptTag(`${projConfig.bundles.client.webPath}${projConfig.bundles.client.devVendorDLL.name}.js`)
             : ''
         }
-        ${ids
-           ? inlineScript(`window._glam=${serialize(ids)};`)
+        ${glamor
+           ? inlineScript(`window._glam=${serialize(glamor.ids)};`)
            : ''
         }
         ${scriptTags(assetsForRender.js)}

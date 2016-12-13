@@ -11,14 +11,14 @@ import ReactHotLoader from './components/ReactHotLoader';
 // Get the DOM Element that will host our React application.
 const container = document.querySelector('#app');
 
-function renderApp() {
-  // We rehydrate the server-side rendered CSS hashes here, so the client-side
-  // does not re-injected them. To do so, it has to run before any code that defines
-  // any styles, which is why we require the App's main component after this has run
-  // instead of importing it at the top of the file.
-  rehydrate(window._glam); // eslint-disable-line no-underscore-dangle
-  const App = require('../shared/components/App').default;
+// This rehydrates glamor with the state from the server side render.
+// NOTE: This has to run before any code that defines any styles, which is why
+// we require the DemoApp component after this has run.
+rehydrate(window._glam); // eslint-disable-line no-underscore-dangle
 
+const DemoApp = require('../shared/components/DemoApp').default;
+
+function renderApp(TheApp) {
   // We use the code-split-component library to provide us with code splitting
   // within our application. This library supports server rendered applications,
   // but for server rendered applications it requires that we rehydrate any
@@ -33,7 +33,7 @@ function renderApp() {
       <ReactHotLoader>
         <CodeSplitProvider state={codeSplitState}>
           <BrowserRouter>
-            <App />
+            <TheApp />
           </BrowserRouter>
         </CodeSplitProvider>
       </ReactHotLoader>,
@@ -48,13 +48,13 @@ if (process.env.NODE_ENV === 'development' && module.hot) {
   module.hot.accept('./index.js');
   // Any changes to our App will cause a hotload re-render.
   module.hot.accept(
-    '../shared/components/App',
-    () => renderApp(require('../shared/components/App').default),
+    '../shared/components/DemoApp',
+    () => renderApp(require('../shared/components/DemoApp').default),
   );
 }
 
 // Execute the first render of our app.
-renderApp();
+renderApp(DemoApp);
 
 // This registers our service worker for asset caching and offline support.
 // Keep this as the last item, just in case the code execution failed (thanks

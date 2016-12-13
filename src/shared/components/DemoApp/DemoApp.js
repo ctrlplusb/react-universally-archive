@@ -34,7 +34,7 @@ css.insert(`
   ul li { display: inline; margin: 0 .5rem; }
 `);
 
-function App() {
+function DemoApp() {
   return (
     <div style={{ padding: '10px' }}>
       {/*
@@ -76,4 +76,4 @@ function App() {
   );
 }
 
-export default App;
+export default DemoApp;

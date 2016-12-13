@@ -8,7 +8,7 @@ import { CodeSplitProvider, createRenderContext } from 'code-split-component';
 import Helmet from 'react-helmet';
 import { renderStaticOptimized } from 'glamor/server';
 import generateHTML from './generateHTML';
-import App from '../../../shared/components/App';
+import DemoApp from '../../../shared/components/DemoApp';
 import envConfig from '../../../../config/private/environment';
 
 /**
@@ -47,12 +47,14 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
   // to query which chunks/modules were used during the render process.
   const codeSplitContext = createRenderContext();
 
-  // Create our application and render it into a string.
-  const { html: app, css, ids } = renderStaticOptimized(() =>
+  // Create our React application and render it into a string using the glamor
+  // provided helper as a wrapper to ensure that we get back the required
+  // glamor state..
+  const { html: reactAppString, css, ids } = renderStaticOptimized(() =>
     renderToString(
       <CodeSplitProvider context={codeSplitContext}>
         <ServerRouter location={request.url} context={reactRouterContext}>
-          <App />
+          <DemoApp />
         </ServerRouter>
       </CodeSplitProvider>,
     ),
@@ -60,12 +62,8 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
 
   // Generate the html response.
   const html = generateHTML({
-    // Provide the full app react element.
-    app,
-    // server-side generated glamor styles
-    css,
-    // server-side generated glamor ids
-    ids,
+    // Provide the rendered React applicaiton string.
+    reactAppString,
     // Nonce which allows us to safely declare inline scripts.
     nonce,
     // Running this gets all the helmet properties (e.g. headers/scripts/title etc)
@@ -76,6 +74,11 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     // html, and then the client bundle can use this data to know which chunks/
     // modules need to be rehydrated prior to the application being rendered.
     codeSplitState: codeSplitContext.getState(),
+    // The glamor state representing this request.
+    glamor: {
+      css,
+      ids,
+    },
   });
 
   // Get the render result from the server render context.
