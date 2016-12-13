@@ -5,15 +5,21 @@
 // maps will give us nice stack traces.
 import 'source-map-support/register';
 
+// Polyfill "fetch" api, required by apollo.
+import 'isomorphic-fetch';
+
 import express from 'express';
 import compression from 'compression';
 import { resolve as pathResolve } from 'path';
 import appRootDir from 'app-root-dir';
+import bodyParser from 'body-parser';
+import { apolloExpress, graphiqlExpress } from 'apollo-server';
 import reactApplication from './middleware/reactApplication';
 import security from './middleware/security';
 import clientBundle from './middleware/clientBundle';
 import serviceWorker from './middleware/serviceWorker';
 import errorHandlers from './middleware/errorHandlers';
+import graphqlSchema from './graphql/schema';
 import projConfig from '../../config/private/project';
 import envConfig from '../../config/private/environment';
 
@@ -36,6 +42,13 @@ app.use(compression());
 // application for it to work correctly.
 if (process.env.NODE_ENV === 'production') {
   app.get(`/${projConfig.serviceWorker.fileName}`, serviceWorker);
+}
+
+// Our apollo stack graphql server endpoints.
+app.use('/graphql', bodyParser.json(), apolloExpress({ schema: graphqlSchema }));
+if (process.env.NODE_ENV === 'development') {
+  // Enable the useful graphiql tool for development only.
+  app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 }
 
 // Configure serving of our client bundle.

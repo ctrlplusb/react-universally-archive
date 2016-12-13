@@ -5,11 +5,24 @@ import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router';
 import { CodeSplitProvider, rehydrateState } from 'code-split-component';
+import ApolloClient from 'apollo-client';
+import { ApolloProvider } from 'react-apollo';
+import configureStore from '../shared/redux/configureStore';
 import ReactHotLoader from './components/ReactHotLoader';
 import App from '../shared/components/App';
 
+// Create the apollo graphql client.
+const apolloClient = new ApolloClient();
+
 // Get the DOM Element that will host our React application.
 const container = document.querySelector('#app');
+
+// Create our Redux store.
+const store = configureStore(
+  apolloClient,
+  // Server side rendering would have mounted our state on this global.
+  window.APP_STATE,
+);
 
 function renderApp(TheApp) {
   // We use the code-split-component library to provide us with code splitting
@@ -25,9 +38,11 @@ function renderApp(TheApp) {
     render(
       <ReactHotLoader>
         <CodeSplitProvider state={codeSplitState}>
-          <BrowserRouter>
-            <TheApp />
-          </BrowserRouter>
+          <ApolloProvider store={store} client={apolloClient}>
+            <BrowserRouter>
+              <TheApp />
+            </BrowserRouter>
+          </ApolloProvider>
         </CodeSplitProvider>
       </ReactHotLoader>,
       container,

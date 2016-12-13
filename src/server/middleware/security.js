@@ -54,6 +54,10 @@ Object.keys(projConfig.cspExtensions).forEach((key) => {
   } else {
     cspConfig.directives[key] = projConfig.cspExtensions[key];
   }
+
+  // Graphiql needs the following
+  cspConfig.directives.scriptSrc.push('cdn.jsdelivr.net');
+  cspConfig.directives.styleSrc.push('cdn.jsdelivr.net');
 });
 
 if (process.env.NODE_ENV === 'development') {
