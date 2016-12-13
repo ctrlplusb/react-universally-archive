@@ -61,6 +61,8 @@ export default {
           mode === 'development'
             ? 'react-hot-loader/babel'
             : null,
+          // add the glamor/babel plugin
+          'glamor/babel',
           // We are adding the experimental "object rest spread" syntax as
           // it is super useful.  There is a caveat with the plugin that
           // requires us to include the destructuring plugin too.

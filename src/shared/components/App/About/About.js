@@ -1,11 +1,16 @@
 /* @flow */
 
 import React from 'react';
+import { css } from 'glamor';
 import Helmet from 'react-helmet';
+
+const aboutStyles = css`
+  text-align: center;
+`;
 
 function About() {
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div className={aboutStyles}>
       <Helmet title="About" />
 
       Produced with ❤️

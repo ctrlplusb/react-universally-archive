@@ -4,11 +4,35 @@ import React from 'react';
 import { Match, Miss } from 'react-router';
 import Helmet from 'react-helmet';
 import { CodeSplit } from 'code-split-component';
-import 'normalize.css/normalize.css';
-import './globals.css';
+import { css } from 'glamor';
+import 'glamor/reset';
 import Error404 from './Error404';
 import Header from './Header';
 import htmlPageConfig from '../../../../config/public/htmlPage';
+
+css.insert(`
+  html {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+
+  *,
+  *:before,
+  *:after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Inline our ul for our menu */
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  ul li { display: inline; margin: 0 .5rem; }
+`);
 
 function App() {
   return (

@@ -4,16 +4,23 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router';
+import { rehydrate } from 'glamor';
 import { CodeSplitProvider, rehydrateState } from 'code-split-component';
 import ReactHotLoader from './components/ReactHotLoader';
-import App from '../shared/components/App';
 
 // Get the DOM Element that will host our React application.
 const container = document.querySelector('#app');
 
-function renderApp(TheApp) {
+function renderApp() {
+  // We rehydrate the server-side rendered CSS hashes here, so the client-side
+  // does not re-injected them. To do so, it has to run before any code that defines
+  // any styles, which is why we require the App's main component after this has run
+  // instead of importing it at the top of the file.
+  rehydrate(window._glam); // eslint-disable-line no-underscore-dangle
+  const App = require('../shared/components/App').default;
+
   // We use the code-split-component library to provide us with code splitting
-  // within our application.  This library supports server rendered applications,
+  // within our application. This library supports server rendered applications,
   // but for server rendered applications it requires that we rehydrate any
   // code split modules that may have been rendered for a request.  We use
   // the provided helper and then pass the result to the CodeSplitProvider
@@ -26,7 +33,7 @@ function renderApp(TheApp) {
       <ReactHotLoader>
         <CodeSplitProvider state={codeSplitState}>
           <BrowserRouter>
-            <TheApp />
+            <App />
           </BrowserRouter>
         </CodeSplitProvider>
       </ReactHotLoader>,
@@ -47,7 +54,7 @@ if (process.env.NODE_ENV === 'development' && module.hot) {
 }
 
 // Execute the first render of our app.
-renderApp(App);
+renderApp();
 
 // This registers our service worker for asset caching and offline support.
 // Keep this as the last item, just in case the code execution failed (thanks

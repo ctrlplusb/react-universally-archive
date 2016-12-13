@@ -1,12 +1,19 @@
 /* @flow */
 
 import React from 'react';
+import { css } from 'glamor';
 import Logo from './Logo';
 import Menu from './Menu';
 
+const headerStyles = css`
+  text-align: center;
+  margin-bottom: 1rem;
+  background-color: #FBEEE6;
+`;
+
 function Header() {
   return (
-    <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+    <div className={headerStyles}>
       <Logo />
       <h1>React, Universally</h1>
       <strong>

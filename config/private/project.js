@@ -161,7 +161,7 @@ export default {
         // which has a very simple loader configuration.
         // Add the respective modules to the ignores list below to ensure
         // that they don't get bundled into the vendor DLL.
-        ignores: ['normalize.css/normalize.css'],
+        ignores: [],
 
         // The name of the vendor DLL.
         name: '__dev_vendor_dll__',
