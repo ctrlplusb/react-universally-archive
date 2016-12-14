@@ -16,15 +16,13 @@ type HappyPackConfig = {
   loaders: Array<string|HappyPackLoaderConfig>,
 };
 
-const happyThreadPool = HappyPack.ThreadPool({ size: 5 });
-
 // Generates a HappyPack plugin.
 // @see https://github.com/amireh/happypack/
 export function happyPackPlugin({ name, loaders } : HappyPackConfig) {
   return new HappyPack({
     id: name,
     verbose: false,
-    threadPool: happyThreadPool,
+    threads: 5,
     loaders,
   });
 }
@@ -92,18 +90,19 @@ export function merge(...args : Array<?Object>) {
 type NotificationOptions = {
   title: string,
   message: string,
-  open?: string,
+  notify?: boolean,
   level?: 'info'|'warn'|'error'
 };
 
-export function createNotification(options : NotificationOptions) {
+export function log(options : NotificationOptions) {
   const title = `${options.title.toUpperCase()}`;
 
-  notifier.notify({
-    title,
-    message: options.message,
-    open: options.open,
-  });
+  if (options.notify) {
+    notifier.notify({
+      title,
+      message: options.message,
+    });
+  }
 
   const level = options.level || 'info';
   const msg = `==> ${title} -> ${options.message}`;
@@ -117,6 +116,5 @@ export function createNotification(options : NotificationOptions) {
 }
 
 export function exec(command : string) {
-  // $FlowFixMe
   execSync(command, { stdio: 'inherit', cwd: appRootDir.get() });
 }

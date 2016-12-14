@@ -7,14 +7,7 @@ import md5 from 'md5';
 import fs from 'fs';
 import { sync as globSync } from 'glob';
 import matchRequire from 'match-require';
-import { createNotification } from '../utils';
-
-function getJsFilesFromDir(targetPath) {
-  return ['js', 'jsx'].reduce((acc, ext) =>
-    acc.concat(globSync(`${targetPath}/**/*.${ext}`)),
-    [],
-  );
-}
+import { log } from '../utils';
 
 function createVendorDLL(bundleName : string, bundleConfig : Object) {
   // $FlowFixMe
@@ -77,17 +70,28 @@ function createVendorDLL(bundleName : string, bundleConfig : Object) {
       // Get all the src files.
       Promise.all(
         bundleConfig.srcPaths.map(srcPath =>
-          Promise.resolve(getJsFilesFromDir(pathResolve(appRootDir.get(), srcPath))),
+          Promise.resolve(
+            ['js', 'jsx']
+              .reduce((acc, ext) =>
+                acc.concat(globSync(`${pathResolve(appRootDir.get(), srcPath)}/**/*.${ext}`)),
+                [],
+              )
+              .filter(srcFilePath =>
+                bundleConfig.devVendorDLL.srcFileIgnores.findIndex(
+                  srcFileRegex => srcFileRegex.test(srcFilePath),
+                ) === -1,
+              ),
+          ),
         ),
       )
       // then extract the modules
       .then(extractModulesFromSrcFiles)
       // then create the vendor dll.
       .then((modules) => {
-        createNotification({
+        log({
           title: 'vendorDLL',
           level: 'info',
-          message: 'Vendor DLL build complete. Check console for module list.',
+          message: 'Vendor DLL build complete. Modules list:',
         });
         console.log(modules);
 
@@ -110,7 +114,7 @@ function createVendorDLL(bundleName : string, bundleConfig : Object) {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(vendorDLLHashFilePath)) {
       // builddll
-      createNotification({
+      log({
         title: 'vendorDLL',
         level: 'warn',
         message: `Generating a new "${bundleName}" vendor dll for boosted development performance...`,
@@ -122,14 +126,14 @@ function createVendorDLL(bundleName : string, bundleConfig : Object) {
       const dependenciesChanged = dependenciesHash !== currentDependenciesHash;
 
       if (dependenciesChanged) {
-        createNotification({
+        log({
           title: 'vendorDLL',
           level: 'warn',
           message: `New "${bundleName}" vendor dependencies detected. Regenerating the vendor dll...`,
         });
         buildVendorDLL().then(resolve).catch(reject);
       } else {
-        createNotification({
+        log({
           title: 'vendorDLL',
           level: 'info',
           message: `No changes to existing "${bundleName}" vendor dependencies. Using the existing vendor dll.`,
