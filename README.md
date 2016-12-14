@@ -1,4 +1,4 @@
-### Feature Repository
+### Feature Branch
 
 Note: This is a feature branch of `react-universally`. Please see [`FEATURE.md`](./FEATURE.md) for more information on this branch.
 
