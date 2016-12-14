@@ -33,16 +33,16 @@ function scriptTags(jsFilePaths : Array<string>) {
 }
 
 type Args = {
-  app?: string,
+  reactAppString?: string,
   initialState?: Object,
   nonce: string,
   helmet?: Head,
-  styles?: string,
   codeSplitState?: { chunks: Array<string>, modules: Array<string> },
+  styletron?: string,
 };
 
 export default function generateHTML(args: Args) {
-  const { app, initialState, nonce, helmet, codeSplitState, styles } = args;
+  const { reactAppString, initialState, nonce, helmet, codeSplitState, styletron } = args;
 
   // The chunks that we need to fetch the assets (js/css) for and then include
   // said assets as script/style tags within our html.
@@ -80,11 +80,11 @@ export default function generateHTML(args: Args) {
         ${helmet ? helmet.meta.toString() : ''}
         ${helmet ? helmet.link.toString() : ''}
         ${styleTags(assetsForRender.css)}
-        ${styles || ''}
+        ${styletron || ''}
         ${helmet ? helmet.style.toString() : ''}
       </head>
       <body>
-        <div id='app'>${app || ''}</div>
+        <div id='app'>${reactAppString || ''}</div>
         ${
           // Bind the initial application state based on the server render
           // so the client can register the correct initial state for the view.

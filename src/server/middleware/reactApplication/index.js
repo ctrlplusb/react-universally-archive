@@ -9,7 +9,7 @@ import Styletron from 'styletron-server';
 import { StyletronProvider } from 'styletron-react';
 import Helmet from 'react-helmet';
 import generateHTML from './generateHTML';
-import App from '../../../shared/components/App';
+import DemoApp from '../../../shared/components/DemoApp';
 import envConfig from '../../../../config/private/environment';
 
 /**
@@ -51,12 +51,12 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
   // Create a Styletron instance
   const styletron = new Styletron();
 
-  // Create our application and render it into a string.
-  const app = renderToString(
+  // Create our React application and render it into a string.
+  const reactAppString = renderToString(
     <CodeSplitProvider context={codeSplitContext}>
       <StyletronProvider styletron={styletron}>
         <ServerRouter location={request.url} context={reactRouterContext}>
-          <App />
+          <DemoApp />
         </ServerRouter>
       </StyletronProvider>
     </CodeSplitProvider>,
@@ -65,7 +65,7 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
   // Generate the html response.
   const html = generateHTML({
     // Provide the full app react element.
-    app,
+    reactAppString,
     // Nonce which allows us to safely declare inline scripts.
     nonce,
     // Running this gets all the helmet properties (e.g. headers/scripts/title etc)
@@ -77,7 +77,7 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     // modules need to be rehydrated prior to the application being rendered.
     codeSplitState: codeSplitContext.getState(),
     // Get the styletron generated styles for our rendered React application.
-    styles: styletron.getStylesheetsHtml(),
+    styletron: styletron.getStylesheetsHtml(),
   });
 
   // Get the render result from the server render context.

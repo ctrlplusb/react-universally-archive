@@ -11,7 +11,7 @@ import Header from './Header';
 import Padded from '../lib/layout/Padded';
 import htmlPageConfig from '../../../../config/public/htmlPage';
 
-function App() {
+function DemoApp() {
   return (
     <Padded>
       {/*
@@ -53,4 +53,4 @@ function App() {
   );
 }
 
-export default App;
+export default DemoApp;
