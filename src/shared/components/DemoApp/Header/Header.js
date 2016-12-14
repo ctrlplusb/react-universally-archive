@@ -13,7 +13,8 @@ const HeaderWrapper = styled.div`
   margin-bottom: 1rem;
   text-align: center;
   color: #5499C7;
-`
+`;
+
 function Header() {
   return (
     <HeaderWrapper>
