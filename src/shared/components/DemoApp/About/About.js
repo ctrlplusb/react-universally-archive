@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Helmet from 'react-helmet';
-import Centered from '../../lib/layout/Centered';
+import Centered from '../lib/layout/Centered';
 
 function About() {
   return (

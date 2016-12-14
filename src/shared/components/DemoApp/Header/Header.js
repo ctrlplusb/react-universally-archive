@@ -4,7 +4,7 @@ import React from 'react';
 import { styled } from 'styletron-react';
 import Logo from './Logo';
 import Menu from './Menu';
-import Centered from '../../lib/layout/Centered';
+import Centered from '../lib/layout/Centered';
 
 const CenteredWithBottomMargin = styled(Centered, {
   marginBottom: '1rem',

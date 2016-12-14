@@ -8,7 +8,7 @@ import 'normalize.css/normalize.css';
 import './globals.css';
 import Error404 from './Error404';
 import Header from './Header';
-import Padded from '../lib/layout/Padded';
+import Padded from './lib/layout/Padded';
 import htmlPageConfig from '../../../../config/public/htmlPage';
 
 function DemoApp() {
