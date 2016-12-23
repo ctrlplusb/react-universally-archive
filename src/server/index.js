@@ -35,6 +35,10 @@ app.use(compression());
 // application for it to work correctly.
 if (process.env.NODE_ENV === 'production') {
   app.use(mount(`/${config.serviceWorker.fileName}`, serviceWorker));
+  app.get(
+    `${config.bundles.client.webPath}${config.serviceWorker.offlinePageFileName}`,
+    offlinePage,
+  );
 }
 
 // Configure serving of our client bundle.
