@@ -10,7 +10,7 @@ import { StyletronProvider } from 'styletron-react';
 import Helmet from 'react-helmet';
 import generateHTML from './generateHTML';
 import DemoApp from '../../../shared/components/DemoApp';
-import envConfig from '../../../../config/private/environment';
+import config from '../../../../config';
 
 /**
  * An express middleware that is capabable of service our React application,
@@ -26,7 +26,7 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
 
   // It's possible to disable SSR, which can be useful in development mode.
   // In this case traditional client side only rendering will occur.
-  if (!envConfig.ssrEnabled) {
+  if (config.disableSSR) {
     if (process.env.NODE_ENV === 'development') {
       console.log('==> Handling react route without SSR');  // eslint-disable-line no-console
     }

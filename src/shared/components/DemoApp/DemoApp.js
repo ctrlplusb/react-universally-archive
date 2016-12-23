@@ -9,7 +9,7 @@ import './globals.css';
 import Error404 from './Error404';
 import Header from './Header';
 import Padded from './lib/layout/Padded';
-import htmlPageConfig from '../../../../config/public/htmlPage';
+import { safeConfigGet } from '../../utils/config';
 
 function DemoApp() {
   return (
@@ -19,12 +19,12 @@ function DemoApp() {
         @see https://github.com/nfl/react-helmet
       */}
       <Helmet
-        htmlAttributes={htmlPageConfig.htmlAttributes}
-        titleTemplate={htmlPageConfig.titleTemplate}
-        defaultTitle={htmlPageConfig.defaultTitle}
-        meta={htmlPageConfig.meta}
-        link={htmlPageConfig.links}
-        script={htmlPageConfig.scripts}
+        htmlAttributes={safeConfigGet(['htmlPage', 'htmlAttributes'])}
+        titleTemplate={safeConfigGet(['htmlPage', 'titleTemplate'])}
+        defaultTitle={safeConfigGet(['htmlPage', 'defaultTitle'])}
+        meta={safeConfigGet(['htmlPage', 'meta'])}
+        link={safeConfigGet(['htmlPage', 'links'])}
+        script={safeConfigGet(['htmlPage', 'scripts'])}
       />
 
       <Header />
