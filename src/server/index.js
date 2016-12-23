@@ -13,7 +13,7 @@ import compression from 'compression';
 import { resolve as pathResolve } from 'path';
 import appRootDir from 'app-root-dir';
 import bodyParser from 'body-parser';
-import { apolloExpress, graphiqlExpress } from 'apollo-server';
+import { apolloExpress } from 'apollo-server';
 import reactApplication from './middleware/reactApplication';
 import security from './middleware/security';
 import clientBundle from './middleware/clientBundle';
@@ -51,10 +51,6 @@ if (process.env.NODE_ENV === 'production'
 
 // Our apollo stack graphql server endpoints.
 app.use('/graphql', bodyParser.json(), apolloExpress({ schema: graphqlSchema }));
-if (process.env.NODE_ENV === 'development') {
-  // Enable the useful graphiql tool for development only.
-  app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
-}
 
 // Configure serving of our client bundle.
 app.use(config.bundles.client.webPath, clientBundle);
