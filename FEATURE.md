@@ -2,7 +2,7 @@
 
 [![Styled Components logo](https://styled-components.com/static/media/logo.333814ad.png "Styled Components")](http://styled-components.com/)
 
-This is a feature branch of `react-universally` that is currently built against `v11.0.0`.
+This is a feature branch of `react-universally` that is currently built against `v11.0.1`.
 
 It provides you with a simple Style Components integration.
 
