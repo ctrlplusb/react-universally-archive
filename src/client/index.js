@@ -3,15 +3,20 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter } from 'react-router';
+import { createInitialBrowserRouter } from 'found';
 import { CodeSplitProvider, rehydrateState } from 'code-split-component';
 import ReactHotLoader from './components/ReactHotLoader';
-import DemoApp from '../shared/components/DemoApp';
+import { routeConfig, renderConfig } from '../shared/components/DemoApp';
 
 // Get the DOM Element that will host our React application.
 const container = document.querySelector('#app');
 
-function renderApp(TheApp) {
+async function renderApp() {
+  const BrowserRouter = await createInitialBrowserRouter({
+    routeConfig,
+    render: renderConfig,
+  });
+
   // We use the code-split-component library to provide us with code splitting
   // within our application.  This library supports server rendered applications,
   // but for server rendered applications it requires that we rehydrate any
@@ -25,9 +30,7 @@ function renderApp(TheApp) {
     render(
       <ReactHotLoader>
         <CodeSplitProvider state={codeSplitState}>
-          <BrowserRouter>
-            <TheApp />
-          </BrowserRouter>
+          <BrowserRouter />
         </CodeSplitProvider>
       </ReactHotLoader>,
       container,
@@ -42,12 +45,12 @@ if (process.env.NODE_ENV === 'development' && module.hot) {
   // Any changes to our App will cause a hotload re-render.
   module.hot.accept(
     '../shared/components/DemoApp',
-    () => renderApp(require('../shared/components/DemoApp').default),
+    () => renderApp(),
   );
 }
 
 // Execute the first render of our app.
-renderApp(DemoApp);
+renderApp();
 
 // This registers our service worker for asset caching and offline support.
 // Keep this as the last item, just in case the code execution failed (thanks

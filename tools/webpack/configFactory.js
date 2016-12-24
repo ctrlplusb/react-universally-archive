@@ -131,14 +131,17 @@ export default function webpackConfigFactory(buildOptions: BuildOptions) {
       // This makes importing of the output module as simple as:
       //   import server from './build/server';
       index: removeEmpty([
+        // Required on the server to fix an issue with Found's transpilation
+        ifNode('core-js/library/fn/symbol'),
         // Required to support hot reloading of our client.
         ifDevClient('react-hot-loader/patch'),
         // Required to support hot reloading of our client.
         ifDevClient(() => `webpack-hot-middleware/client?reload=true&path=http://${config.host}:${config.clientDevServerPort}/__webpack_hmr`),
-        // We are using polyfill.io instead of the very heavy babel-polyfill.
+        // On the client we are using polyfill.io instead of the very heavy babel-polyfill.
         // Therefore we need to add the regenerator-runtime as the babel-polyfill
         // included this, which polyfill.io doesn't include.
-        ifClient('regenerator-runtime/runtime'),
+        // Required on the server by Found.
+        'regenerator-runtime/runtime',
         // The source entry file for the bundle.
         path.resolve(appRootDir.get(), bundleConfig.srcEntryFile),
       ]),

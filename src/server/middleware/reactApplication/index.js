@@ -3,18 +3,18 @@
 import type { $Request, $Response, Middleware } from 'express';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { ServerRouter, createServerRenderContext } from 'react-router';
+import { getFarceResult } from 'found/lib/server';
 import { CodeSplitProvider, createRenderContext } from 'code-split-component';
 import Helmet from 'react-helmet';
 import generateHTML from './generateHTML';
-import DemoApp from '../../../shared/components/DemoApp';
+import { routeConfig, renderConfig } from '../../../shared/components/DemoApp';
 import config from '../../../../config';
 
 /**
  * An express middleware that is capabable of service our React application,
  * supporting server side rendering of the application.
  */
-function reactApplicationMiddleware(request: $Request, response: $Response) {
+async function reactApplicationMiddleware(request: $Request, response: $Response) {
   // We should have had a nonce provided to us.  See the server/index.js for
   // more information on what this is.
   if (typeof response.locals.nonce !== 'string') {
@@ -38,9 +38,16 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     return;
   }
 
-  // First create a context for <ServerRouter>, which will allow us to
-  // query for the results of the render.
-  const reactRouterContext = createServerRenderContext();
+  const { redirect, status, element } = await getFarceResult({
+    url: request.url,
+    routeConfig,
+    render: renderConfig,
+  });
+
+  if (redirect) {
+    response.redirect(302, redirect.url);
+    return;
+  }
 
   // We also create a context for our <CodeSplitProvider> which will allow us
   // to query which chunks/modules were used during the render process.
@@ -49,9 +56,7 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
   // Create our React application and render it into a string.
   const reactAppString = renderToString(
     <CodeSplitProvider context={codeSplitContext}>
-      <ServerRouter location={request.url} context={reactRouterContext}>
-        <DemoApp />
-      </ServerRouter>
+      {element}
     </CodeSplitProvider>,
   );
 
@@ -71,27 +76,12 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     codeSplitState: codeSplitContext.getState(),
   });
 
-  // Get the render result from the server render context.
-  const renderResult = reactRouterContext.getResult();
-
-  // Check if the render result contains a redirect, if so we need to set
-  // the specific status and redirect header and end the response.
-  if (renderResult.redirect) {
-    response.status(301).setHeader('Location', renderResult.redirect.pathname);
-    response.end();
-    return;
-  }
-
   response
-    .status(
-      renderResult.missed
-        // If the renderResult contains a "missed" match then we set a 404 code.
-        // Our App component will handle the rendering of an Error404 view.
-        ? 404
-        // Otherwise everything is all good and we send a 200 OK status.
-        : 200,
-    )
+    .status(status)
     .send(html);
 }
 
-export default (reactApplicationMiddleware : Middleware);
+// Create an async wrapper to catch exceptions thrown by our middleware
+const asyncWrapper = fn => (...args) => fn(...args).catch(args[2]);
+
+export default (asyncWrapper(reactApplicationMiddleware) : Middleware);

@@ -1,16 +1,14 @@
 /* @flow */
 
 import React from 'react';
-import { Match, Miss } from 'react-router';
 import Helmet from 'react-helmet';
-import { CodeSplit } from 'code-split-component';
 import 'normalize.css/normalize.css';
 import './globals.css';
-import Error404 from './Error404';
+import type { ReactChildren } from '../../types/react';
 import Header from './Header';
 import { safeConfigGet } from '../../utils/config';
 
-function DemoApp() {
+function DemoApp({ children }: { children?: ReactChildren }) {
   return (
     <div style={{ padding: '10px' }}>
       {/*
@@ -28,26 +26,7 @@ function DemoApp() {
 
       <Header />
 
-      <Match
-        exactly
-        pattern="/"
-        render={routerProps =>
-          <CodeSplit chunkName="home" modules={{ Home: require('./Home') }}>
-            { ({ Home }) => Home && <Home {...routerProps} /> }
-          </CodeSplit>
-        }
-      />
-
-      <Match
-        pattern="/about"
-        render={routerProps =>
-          <CodeSplit chunkName="about" modules={{ About: require('./About') }}>
-            { ({ About }) => About && <About {...routerProps} /> }
-          </CodeSplit>
-        }
-      />
-
-      <Miss component={Error404} />
+      {children}
     </div>
   );
 }
