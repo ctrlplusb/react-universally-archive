@@ -1,14 +1,11 @@
-/* @flow */
-
 import React from 'react';
 import Helmet from 'react-helmet';
 import 'normalize.css/normalize.css';
 import './globals.css';
-import type { ReactChildren } from '../../types/react';
 import Header from './Header';
 import { safeConfigGet } from '../../utils/config';
 
-function DemoApp({ children }: { children?: ReactChildren }) {
+function DemoApp({ children }) {
   return (
     <div style={{ padding: '10px' }}>
       {/*

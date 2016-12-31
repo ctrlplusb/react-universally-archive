@@ -1,6 +1,4 @@
-/* @flow */
 
-import type { $Request, $Response, Middleware } from 'express';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { getFarceResult } from 'found/lib/server';
@@ -14,7 +12,7 @@ import config from '../../../../config';
  * An express middleware that is capabable of service our React application,
  * supporting server side rendering of the application.
  */
-async function reactApplicationMiddleware(request: $Request, response: $Response) {
+async function reactApplicationMiddleware(request, response) {
   // We should have had a nonce provided to us.  See the server/index.js for
   // more information on what this is.
   if (typeof response.locals.nonce !== 'string') {
@@ -82,6 +80,6 @@ async function reactApplicationMiddleware(request: $Request, response: $Response
 }
 
 // Create an async wrapper to catch exceptions thrown by our middleware
-const asyncWrapper = fn => (...args) => fn(...args).catch(args[2]);
+const asyncErrorHandlerWrapper = fn => (...args) => fn(...args).catch(args[2]);
 
-export default (asyncWrapper(reactApplicationMiddleware) : Middleware);
+export default asyncErrorHandlerWrapper(reactApplicationMiddleware);

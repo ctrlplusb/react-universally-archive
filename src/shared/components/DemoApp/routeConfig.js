@@ -1,12 +1,9 @@
-/* @flow */
-
 import React from 'react';
 import { makeRouteConfig, Route } from 'found/lib/jsx';
 import { CodeSplit } from 'code-split-component';
-import type { ReactElement } from '../../types/react';
 import App from './DemoApp';
 
-function routeRender({ Component, props }: {Component: ReactElement, props?: any}) {
+function routeRender({ Component, props }) {
   if (!Component || !props) {
     return <div><small>Loading&hellip;</small></div>;
   }
