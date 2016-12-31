@@ -1,9 +1,7 @@
-/* @flow */
-
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import reducers from '../reducers';
 
-function configureStore(apolloClient : Object, initialState? : Object) {
+function configureStore(apolloClient, initialState) {
   const enhancers = compose(
     // Middleware store enhancer.
     applyMiddleware(
