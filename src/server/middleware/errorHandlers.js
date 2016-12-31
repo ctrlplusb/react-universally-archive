@@ -23,4 +23,4 @@ const errorHandlersMiddleware = [
   },
 ];
 
-export default (errorHandlersMiddleware);
+export default errorHandlersMiddleware;

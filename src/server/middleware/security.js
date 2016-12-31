@@ -120,4 +120,4 @@ const securityMiddleware = [
   helmet.contentSecurityPolicy(cspConfig),
 ];
 
-export default (securityMiddleware);
+export default securityMiddleware;
