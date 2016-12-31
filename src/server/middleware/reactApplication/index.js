@@ -1,11 +1,10 @@
-/* @flow */
 /* eslint-disable no-console */
 
-import type { $Request, $Response, Middleware } from 'express';
 import React from 'react';
+import { renderToString } from 'react-dom/server';
 import { ServerRouter, createServerRenderContext } from 'react-router';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
-import { ApolloProvider, renderToStringWithData } from 'react-apollo';
+import { ApolloProvider, getDataFromTree } from 'react-apollo';
 import { CodeSplitProvider, createRenderContext } from 'code-split-component';
 import Helmet from 'react-helmet';
 import generateHTML from './generateHTML';
@@ -17,7 +16,7 @@ import config from '../../../../config';
  * An express middleware that is capabable of service our React application,
  * supporting server side rendering of the application.
  */
-function reactApplicationMiddleware(request: $Request, response: $Response) {
+function reactApplicationMiddleware(request, response) {
   // We should have had a nonce provided to us.  See the server/index.js for
   // more information on what this is.
   if (typeof response.locals.nonce !== 'string') {
@@ -79,15 +78,14 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
     </CodeSplitProvider>
   );
 
-  // Render the react application to a string using the provided Apollo
-  // renderToString custom implementation.
-  // This is a requirement to ensure that all the Apollo component event
-  // hooks get fired and resolved for the current request.
-  renderToStringWithData(reactAppElement).then((reactAppString) => {
+  // First we load all the required data for our components using Apollo.
+  getDataFromTree(reactAppElement).then(() => {
+    // Then we can render our app...
+
     // Generate the html response.
     const html = generateHTML({
       // Provide the rendered React application as a string.
-      reactAppString,
+      reactAppString: renderToString(reactAppElement),
       // Nonce which allows us to safely declare inline scripts.
       nonce,
       // Running this gets all the helmet properties (e.g. headers/scripts/title etc)
@@ -132,4 +130,4 @@ function reactApplicationMiddleware(request: $Request, response: $Response) {
   });
 }
 
-export default (reactApplicationMiddleware : Middleware);
+export default (reactApplicationMiddleware);

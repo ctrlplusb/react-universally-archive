@@ -1,4 +1,3 @@
-/* @flow */
 /* eslint-disable global-require */
 
 import React from 'react';
@@ -21,7 +20,7 @@ const container = document.querySelector('#app');
 const store = configureStore(
   apolloClient,
   // Server side rendering would have mounted our state on this global.
-  window.APP_STATE,
+  window.__APP_STATE__, // eslint-disable-line no-underscore-dangle
 );
 
 function renderApp(TheApp) {
