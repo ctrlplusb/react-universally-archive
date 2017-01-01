@@ -1,6 +1,6 @@
 ### Feature Branch
 
-Note: This is a feature branch of `react-universally`. Please see [`FEATURE.md`](./FEATURE.md) for more information on this repo.
+Note: This is a feature branch of `react-universally`. Please see the [`FEATURE_GLAMOR.md`](/docs/FEATURE_GLAMOR.md) doc for more information on this branch.
 
 ---
 
