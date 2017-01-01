@@ -1,5 +1,3 @@
-/* @flow */
-
 import React from 'react';
 import { css } from 'glamor';
 import logo from './logo.png';
