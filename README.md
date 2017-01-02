@@ -1,6 +1,6 @@
 ### Feature Branch
 
-Note: This is a feature branch of `react-universally`. Please see [`FEATURE.md`](./FEATURE.md) for more information on this branch.
+Note: This is a feature branch of `react-universally`. Please see the [`FEATURE_POSTCSS_SASS.md`](/docs/FEATURE_POSTCSS_SASS.md) doc for more information on this branch.
 
 ---
 
