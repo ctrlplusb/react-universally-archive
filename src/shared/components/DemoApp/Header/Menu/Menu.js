@@ -1,5 +1,3 @@
-/* @flow */
-
 import React from 'react';
 import { Link } from 'react-router';
 import HorizontalList from '../../lib/layout/HorizontalList';

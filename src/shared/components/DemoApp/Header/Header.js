@@ -1,5 +1,3 @@
-/* @flow */
-
 import React from 'react';
 import { styled } from 'styletron-react';
 import Logo from './Logo';
