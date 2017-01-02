@@ -1,6 +1,6 @@
 # Koa
 
-This is a feature branch of `react-universally` that is currently built against `v11.0.1`.
+This is a feature branch of `react-universally` that is currently built against `v12.0.0`.
 
 It provides you with a simple Koa2 base implementation.
 

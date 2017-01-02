@@ -1,17 +1,16 @@
-/* @flow */
 /* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-param-reassign */
 
-import type { KoaContext as $KoaContext } from 'koa-flow-declarations/KoaContext';
 import compose from 'koa-compose';
 
-const errorHandlersMiddleware = () => async (ctx: $KoaContext, next: Function) => {
+const errorHandlersMiddleware = () => async (ctx, next) => {
   try {
-    await next()
+    await next();
   } catch (err) {
     // Handle 404 errors.
     // Note: the react application middleware hands 404 paths, but it is good to
-    // have this backup for paths not handled by the universal middleware. 
+    // have this backup for paths not handled by the universal middleware.
     // For example you may bind a /api path to koa.
     if (err.status === 400) {
       ctx.status = 400;
@@ -29,6 +28,6 @@ const errorHandlersMiddleware = () => async (ctx: $KoaContext, next: Function) =
       await next();
     }
   }
-}
+};
 
-export default (errorHandlersMiddleware : Function<Middleware>);
+export default errorHandlersMiddleware;

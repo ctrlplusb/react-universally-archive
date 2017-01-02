@@ -1,9 +1,4 @@
-/* @flow */
 /* eslint-disable no-console */
-
-// This grants us source map support, which combined with our webpack source
-// maps will give us nice stack traces.
-import 'source-map-support/register';
 
 import Koa from 'koa';
 import mount from 'koa-mount';

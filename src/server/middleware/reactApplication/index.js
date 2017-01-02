@@ -1,6 +1,3 @@
-/* @flow */
-
-import type { KoaContext as $KoaContext } from 'koa-flow-declarations/KoaContext';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ServerRouter, createServerRenderContext } from 'react-router';
@@ -14,7 +11,7 @@ import config from '../../../../config';
  * An express middleware that is capabable of service our React application,
  * supporting server side rendering of the application.
  */
-async function reactApplicationMiddleware(ctx: $KoaContext, next: Function) {
+async function reactApplicationMiddleware(ctx, next) {
   const { request, response, state } = ctx;
 
   // We should have had a nonce provided to us.  See the server/index.js for
@@ -39,7 +36,7 @@ async function reactApplicationMiddleware(ctx: $KoaContext, next: Function) {
     response.status(200).send(html);
     return;
   }
-  
+
   // First create a context for <ServerRouter>, which will allow us to
   // query for the results of the render.
   const reactRouterContext = createServerRenderContext();
@@ -96,4 +93,4 @@ async function reactApplicationMiddleware(ctx: $KoaContext, next: Function) {
   await next();
 }
 
-export default (reactApplicationMiddleware : Function);
+export default (reactApplicationMiddleware);
