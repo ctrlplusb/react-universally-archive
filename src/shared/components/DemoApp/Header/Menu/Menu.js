@@ -1,5 +1,3 @@
-/* @flow */
-
 import React from 'react';
 import { Link } from 'react-router';
 // We use `require` here instead of `import` to fix the issues detailed
