@@ -1,6 +1,6 @@
 # Flow
 
-This is a feature branch of `react-universally` that is currently built against `v11.0.1`.
+This is a feature branch of `react-universally` that is currently built against `v12.0.0`.
 
 It provides you with a [Flow](https://flowtype.org/) implementation.  Flow is a static type checker for javascript that uses a lot of type inference, so you don't need to declare types throughout your code.
 
