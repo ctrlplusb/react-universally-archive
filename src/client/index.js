@@ -20,7 +20,8 @@ const container = document.querySelector('#app');
 const store = configureStore(
   apolloClient,
   // Server side rendering would have mounted our state on this global.
-  window.__APP_STATE__, // eslint-disable-line no-underscore-dangle
+  // eslint-disable-next-line no-underscore-dangle
+  window.__APP_STATE__,
 );
 
 function renderApp(TheApp) {
