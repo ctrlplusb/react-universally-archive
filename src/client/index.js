@@ -13,7 +13,8 @@ const container = document.querySelector('#app');
 // This rehydrates glamor with the state from the server side render.
 // NOTE: This has to run before any code that defines any styles, which is why
 // we require the DemoApp component after this has run.
-rehydrate(window._glam); // eslint-disable-line no-underscore-dangle
+// eslint-disable-next-line no-underscore-dangle
+rehydrate(window._glam);
 
 const DemoApp = require('../shared/components/DemoApp').default;
 
