@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { makeRouteConfig, Route } from 'found/lib/jsx';
 import { CodeSplit } from 'code-split-component';
 import App from './DemoApp';
 
-function routeRender({ Component, props }) {
+function RouteRender({ Component, props }) {
   if (!Component || !props) {
     return <div><small>Loading&hellip;</small></div>;
   }
 
   return <Component {...props} />;
 }
+RouteRender.propTypes = {
+  Component: PropTypes.func.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  props: PropTypes.object.isRequired,
+};
 
 function CodeSplitHome() {
   return (
@@ -34,12 +39,12 @@ export default makeRouteConfig(
   >
     <Route
       Component={CodeSplitHome}
-      render={routeRender}
+      render={RouteRender}
     />
     <Route
       path="about"
       Component={CodeSplitAbout}
-      render={routeRender}
+      render={RouteRender}
     />
   </Route>,
 );

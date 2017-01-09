@@ -5,7 +5,22 @@ import config from '../../../config';
 
 const cspConfig = {
   directives: {
+    childSrc: ["'self'"],
+    // Note: Setting this to stricter than * breaks the service worker. :(
+    // I can't figure out how to get around this, so if you know of a safer
+    // implementation that is kinder to service workers please let me know.
+    connectSrc: ['*'], // ["'self'", 'ws:'],
     defaultSrc: ["'self'"],
+    imgSrc: [
+      "'self'",
+      // If you use Base64 encoded images (i.e. inlined images), then you will
+      // need the following:
+      // 'data:',
+    ],
+    fontSrc: ["'self'"],
+    objectSrc: ["'self'"],
+    mediaSrc: ["'self'"],
+    manifestSrc: ["'self'"],
     scriptSrc: [
       // Allow scripts hosted from our application.
       "'self'",
@@ -25,20 +40,6 @@ const cspConfig = {
       "'unsafe-inline'",
       'blob:',
     ],
-    imgSrc: [
-      "'self'",
-      // If you use Base64 encoded images (i.e. inlined images), then you will
-      // need the following:
-      // 'data:',
-    ],
-    // Note: Setting this to stricter than * breaks the service worker. :(
-    // I can't figure out how to get around this, so if you know of a safer
-    // implementation that is kinder to service workers please let me know.
-    connectSrc: ['*'], // ["'self'", 'ws:'],
-    fontSrc: ["'self'"],
-    objectSrc: ["'self'"],
-    mediaSrc: ["'self'"],
-    childSrc: ["'self'"],
   },
 };
 
@@ -66,7 +67,8 @@ if (process.env.NODE_ENV === 'development') {
 // inline scripts as being safe for execution against our content security policy.
 // @see https://helmetjs.github.io/docs/csp/
 function nonceMiddleware(req, res, next) {
-  res.locals.nonce = uuid.v4(); // eslint-disable-line no-param-reassign
+  // eslint-disable-next-line no-param-reassign
+  res.locals.nonce = uuid.v4();
   next();
 }
 

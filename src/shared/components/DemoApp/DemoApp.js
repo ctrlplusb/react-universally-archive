@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Helmet from 'react-helmet';
 import 'normalize.css/normalize.css';
 import './globals.css';
@@ -27,5 +27,10 @@ function DemoApp({ children }) {
     </div>
   );
 }
+
+DemoApp.propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  children: PropTypes.node,
+};
 
 export default DemoApp;
