@@ -7,7 +7,7 @@ const styled = require('styled-components').default;
 const StyledMenu = styled.ul`
   margin-top: 1rem;
   background-color: #D4E6F1;
-`
+`;
 
 const StyledLink = styled(Link)`
   color: #5F6A6A;
