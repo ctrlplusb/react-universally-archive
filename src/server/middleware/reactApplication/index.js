@@ -4,6 +4,7 @@ import { renderToString } from 'react-dom/server';
 import { ServerRouter, createServerRenderContext } from 'react-router';
 import { CodeSplitProvider, createRenderContext } from 'code-split-component';
 import Helmet from 'react-helmet';
+import styleSheet from 'styled-components/lib/models/StyleSheet'
 import generateHTML from './generateHTML';
 import DemoApp from '../../../shared/components/DemoApp';
 import config from '../../../../config';
@@ -54,6 +55,9 @@ function reactApplicationMiddleware(request, response) {
     </CodeSplitProvider>,
   );
 
+  // render styled-components styleSheets to string.
+  const styles = styleSheet.rules().map(rule => rule.cssText).join('\n')
+  
   // Generate the html response.
   const html = generateHTML({
     // Provide the full app react element.
@@ -68,6 +72,8 @@ function reactApplicationMiddleware(request, response) {
     // html, and then the client bundle can use this data to know which chunks/
     // modules need to be rehydrated prior to the application being rendered.
     codeSplitState: codeSplitContext.getState(),
+    // Exposed styled-components string to the HTML.
+    styledComponents: styles,
   });
 
   // Get the render result from the server render context.
