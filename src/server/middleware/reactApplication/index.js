@@ -8,7 +8,7 @@ import DemoApp from '../../../shared/components/DemoApp';
 import config from '../../../../config';
 
 /**
- * An express middleware that is capabable of service our React application,
+ * A Koa middleware that is capable of service our React application,
  * supporting server side rendering of the application.
  */
 async function reactApplicationMiddleware(ctx, next) {
@@ -79,8 +79,7 @@ async function reactApplicationMiddleware(ctx, next) {
   if (renderResult.redirect) {
     response.status = 301;
     response.header.location = renderResult.redirect.pathname;
-    // response.end();
-    return;
+    return false;
   }
 
   response.status = renderResult.missed
