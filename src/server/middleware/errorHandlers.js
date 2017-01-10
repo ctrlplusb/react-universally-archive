@@ -2,8 +2,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
 
-import compose from 'koa-compose';
-
 const errorHandlersMiddleware = () => async (ctx, next) => {
   try {
     await next();

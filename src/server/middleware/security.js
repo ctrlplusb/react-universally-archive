@@ -1,7 +1,8 @@
 import uuid from 'uuid';
-import hpp from 'hpp';
-import helmet from 'helmet';
+import helmet from 'koa-helmet';
+import compose from 'koa-compose';
 import config from '../../../config';
+
 
 const cspConfig = {
   directives: {
@@ -32,7 +33,7 @@ const cspConfig = {
       // script to do data store rehydration (redux/mobx/apollo) for example.
       // @see https://helmetjs.github.io/docs/csp/
       // $FlowFixMe
-      (req, res) => `'nonce-${res.locals.nonce}'`,
+      (req, res) => `'nonce-${res.nonce}'`,
     ],
     styleSrc: [
       "'self'",
@@ -66,18 +67,18 @@ if (process.env.NODE_ENV === 'development') {
 // Attach a unique "nonce" to every response.  This allows use to declare
 // inline scripts as being safe for execution against our content security policy.
 // @see https://helmetjs.github.io/docs/csp/
-function nonceMiddleware(req, res, next) {
+async function nonceMiddleware({ res }, next) {
   // eslint-disable-next-line no-param-reassign
-  res.locals.nonce = uuid.v4();
-  next();
+  res.nonce = uuid.v4();
+  await next();
 }
 
-const securityMiddleware = [
+const securityMiddleware = compose([
   nonceMiddleware,
 
   // Prevent HTTP Parameter pollution.
   // @see http://bit.ly/2f8q7Td
-  hpp(),
+  // hpp(),
 
   // The xssFilter middleware sets the X-XSS-Protection header to prevent
   // reflected XSS attacks.
@@ -120,6 +121,6 @@ const securityMiddleware = [
   // not remove it without making a serious consideration that you do not
   // require the added security.
   helmet.contentSecurityPolicy(cspConfig),
-];
+]);
 
 export default securityMiddleware;

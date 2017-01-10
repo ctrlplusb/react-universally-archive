@@ -12,14 +12,14 @@ import config from '../../../../config';
  * supporting server side rendering of the application.
  */
 async function reactApplicationMiddleware(ctx, next) {
-  const { request, response, state } = ctx;
+  const { request, response, res } = ctx;
 
   // We should have had a nonce provided to us.  See the server/index.js for
   // more information on what this is.
-  if (typeof state.nonce !== 'string') {
+  if (typeof res.nonce !== 'string') {
     throw new Error('A "nonce" value has not been attached to the response');
   }
-  const nonce = state.nonce;
+  const nonce = res.nonce;
 
   // It's possible to disable SSR, which can be useful in development mode.
   // In this case traditional client side only rendering will occur.
@@ -34,8 +34,10 @@ async function reactApplicationMiddleware(ctx, next) {
       // Nonce which allows us to safely declare inline scripts.
       nonce,
     });
-    response.status(200).send(html);
-    return;
+    response.status = 200;
+    response.body = html;
+
+    await next();
   }
 
   // First create a context for <ServerRouter>, which will allow us to
@@ -79,7 +81,8 @@ async function reactApplicationMiddleware(ctx, next) {
   if (renderResult.redirect) {
     response.status = 301;
     response.header.location = renderResult.redirect.pathname;
-    return false;
+
+    await next();
   }
 
   response.status = renderResult.missed

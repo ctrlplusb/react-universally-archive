@@ -18,7 +18,7 @@ import config from '../../config';
 const app = new Koa();
 
 // Security middlewares.
-app.use(...security);
+app.use(security);
 
 // Gzip compress the responses.
 app.use(compression());
