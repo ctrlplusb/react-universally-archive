@@ -57,7 +57,7 @@ function reactApplicationMiddleware(request, response) {
 
   // render styled-components styleSheets to string.
   const styles = styleSheet.rules().map(rule => rule.cssText).join('\n')
-  
+
   // Generate the html response.
   const html = generateHTML({
     // Provide the full app react element.
@@ -73,7 +73,7 @@ function reactApplicationMiddleware(request, response) {
     // modules need to be rehydrated prior to the application being rendered.
     codeSplitState: codeSplitContext.getState(),
     // Exposed styled-components string to the HTML.
-    styledComponents: styles,
+    styles,
   });
 
   // Get the render result from the server render context.
