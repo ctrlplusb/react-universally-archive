@@ -62,6 +62,13 @@ const config = {
   // These extensions are tried when resolving src files for our bundles..
   bundleSrcTypes: ['js', 'jsx', 'json'],
 
+  // We alias out our react dependencies and replace them with the
+  // lightweight preact library.
+  // @see https://github.com/developit/preact-compat
+  bundleAliases: {
+    react: 'preact-compat',
+    'react-dom': 'preact-compat',
+  },
   // Additional asset types to be supported for our bundles.
   // i.e. you can import the following file types within your source and the
   // webpack bundling process will bundle them with your source and create

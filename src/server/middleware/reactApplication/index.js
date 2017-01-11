@@ -1,6 +1,7 @@
+import 'module-alias/register';
 
 import React from 'react';
-import { renderToString } from 'react-dom/server';
+import renderToString from 'preact-render-to-string';
 import { ServerRouter, createServerRenderContext } from 'react-router';
 import { CodeSplitProvider, createRenderContext } from 'code-split-component';
 import Helmet from 'react-helmet';
@@ -51,7 +52,7 @@ function reactApplicationMiddleware(request, response) {
       <ServerRouter location={request.url} context={reactRouterContext}>
         <DemoApp />
       </ServerRouter>
-    </CodeSplitProvider>,
+    </CodeSplitProvider>
   );
 
   // Generate the html response.

@@ -4,7 +4,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router';
 import { CodeSplitProvider, rehydrateState } from 'code-split-component';
-import ReactHotLoader from './components/ReactHotLoader';
 import DemoApp from '../shared/components/DemoApp';
 
 // Get the DOM Element that will host our React application.
@@ -22,15 +21,13 @@ function renderApp(TheApp) {
   // @see https://github.com/ctrlplusb/code-split-component
   rehydrateState().then(codeSplitState =>
     render(
-      <ReactHotLoader>
-        <CodeSplitProvider state={codeSplitState}>
-          <BrowserRouter>
-            <TheApp />
-          </BrowserRouter>
-        </CodeSplitProvider>
-      </ReactHotLoader>,
+      <CodeSplitProvider state={codeSplitState}>
+        <BrowserRouter>
+          <TheApp />
+        </BrowserRouter>
+      </CodeSplitProvider>,
       container,
-    ),
+    )
   );
 }
 

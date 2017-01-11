@@ -36,7 +36,7 @@ export default function webpackConfigFactory(buildOptions) {
   const isServer = target === 'server';
   const isNode = !isClient; // Any bundle but the client bundle must target node.
 
-  // Preconfigure some ifElse helper instnaces. See the util docs for more
+  // Preconfigure some ifElse helper instances. See the util docs for more
   // information on how this util works.
   const ifDev = ifElse(isDev);
   const ifProd = ifElse(isProd);
@@ -138,8 +138,9 @@ export default function webpackConfigFactory(buildOptions) {
         // source maps will give us nice stack traces for our node executed
         // bundles.
         ifNode('source-map-support/register'),
-        // Required to support hot reloading of our client.
-        ifDevClient('react-hot-loader/patch'),
+        // Enable devtools. You can reduce the size of your app by only including this
+        // module in development builds. eg.
+        ifDevClient('preact/devtools'),
         // Required to support hot reloading of our client.
         ifDevClient(() => `webpack-hot-middleware/client?reload=true&path=http://${config.host}:${config.clientDevServerPort}/__webpack_hmr`),
         // We are using polyfill.io instead of the very heavy babel-polyfill.
@@ -193,6 +194,7 @@ export default function webpackConfigFactory(buildOptions) {
     resolve: {
       // These extensions are tried when resolving a file.
       extensions: config.bundleSrcTypes.map(ext => `.${ext}`),
+      alias: config.bundleAliases || null,
     },
 
     plugins: removeEmpty([
@@ -358,8 +360,6 @@ export default function webpackConfigFactory(buildOptions) {
               ].filter(x => x != null),
 
               plugins: [
-                // Required to support react hot loader.
-                ifDevClient('react-hot-loader/babel'),
                 // This decorates our components with  __self prop to JSX elements,
                 // which React will use to generate some runtime warnings.
                 ifDev('transform-react-jsx-self'),
@@ -618,7 +618,7 @@ export default function webpackConfigFactory(buildOptions) {
             // paths used on the client.
             publicPath: isDev
               // When running in dev mode the client bundle runs on a
-              // seperate port so we need to put an absolute path here.
+              // separate port so we need to put an absolute path here.
               ? `http://${config.host}:${config.clientDevServerPort}${config.bundles.client.webPath}`
               // Otherwise we just use the configured web path for the client.
               : config.bundles.client.webPath,
