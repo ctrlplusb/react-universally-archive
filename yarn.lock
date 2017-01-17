@@ -4772,9 +4772,11 @@ react-hot-loader@3.0.0-beta.6:
     redbox-react "^1.2.5"
     source-map "^0.4.4"
 
-react-jobs@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/react-jobs/-/react-jobs-0.3.0.tgz#33cbc33f7a96d393429ef355b57dd37856f025b4"
+react-jobs@0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/react-jobs/-/react-jobs-0.6.1.tgz#def655ed320b6a70a9c6918e45bcc8fd62a0f72c"
+  dependencies:
+    react-tree-walker "^0.0.1"
 
 react-proxy@^3.0.0-alpha.0:
   version "3.0.0-alpha.1"
@@ -4782,9 +4784,9 @@ react-proxy@^3.0.0-alpha.0:
   dependencies:
     lodash "^4.6.1"
 
-react-redux@5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.1.tgz#84a41bd4cdd180452bb6922bc79ad25bd5abb7c4"
+react-redux@5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.2.tgz#3d9878f5f71c6fafcd45de1fbb162ea31f389814"
   dependencies:
     hoist-non-react-statics "^1.0.3"
     invariant "^2.0.0"
@@ -4806,6 +4808,10 @@ react-side-effect@1.0.2:
   resolved "https://registry.yarnpkg.com/react-side-effect/-/react-side-effect-1.0.2.tgz#98e354decdbf0281e4223d87852d33e345eda561"
   dependencies:
     fbjs "0.1.0-alpha.10"
+
+react-tree-walker@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/react-tree-walker/-/react-tree-walker-0.0.1.tgz#101aead5bd6f23a25df29680046ee73e8d82f9d6"
 
 react@15.3.1:
   version "15.3.1"
