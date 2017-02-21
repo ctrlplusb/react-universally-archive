@@ -1,0 +1,76 @@
+exports[`<About /> renders 1`] = `
+<div
+  style={
+    Object {
+      "textAlign": "center",
+    }
+  }>
+  <HelmetWrapper
+    title="About" />
+  <p>
+    Produced with ❤️ by...
+  </p>
+  <ul
+    style={
+      Object {
+        "marginTop": "1rem",
+      }
+    }>
+    <li>
+      <Contributor
+        name="Alin Porumb"
+        twitter="alinporumb" />
+    </li>
+    <li>
+      <Contributor
+        name="Benjamin Kniffler"
+        twitter="bkniffler" />
+    </li>
+    <li>
+      <Contributor
+        name="Carson Perrotti"
+        twitter="carsonp" />
+    </li>
+    <li>
+      <Contributor
+        name="Christian Glombek"
+        twitter="LorbusChris" />
+    </li>
+    <li>
+      <Contributor
+        name="Christoph Werner"
+        twitter="code_punkt" />
+    </li>
+    <li>
+      <Contributor
+        name="Dion Dirza"
+        twitter="diondirzaa" />
+    </li>
+    <li>
+      <Contributor
+        name="Joe Kohlmann"
+        twitter="jkohlmann" />
+    </li>
+    <li>
+      <Contributor
+        name="Lucian Lature"
+        twitter="lucianlature" />
+    </li>
+    <li>
+      <Contributor
+        name="Steven Enten"
+        twitter="steven_enten" />
+    </li>
+    <li>
+      <Contributor
+        name="Sean Matheson"
+        twitter="controlplusb" />
+    </li>
+    <li>
+      <Contributor
+        name="Steven Truesdell"
+        twitter="StruesCO" />
+    </li>
+  </ul>
+</div>
+`;
