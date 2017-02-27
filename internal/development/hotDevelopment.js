@@ -35,7 +35,6 @@ const initializeBundle = (name, bundleConfig) => {
         // Install the vendor DLL plugin.
         webpackConfig.plugins.push(
           new webpack.DllReferencePlugin({
-            // $FlowFixMe
             manifest: require(
               pathResolve(
                 appRootDir.get(),
@@ -99,7 +98,6 @@ class HotDevelopment {
       .then((clientCompiler) => {
         this.hotNodeServers = nodeBundles
           .map(({ name, createCompiler }) =>
-            // $FlowFixMe
             new HotNodeServer(name, createCompiler(), clientCompiler),
           );
       });
