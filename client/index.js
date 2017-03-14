@@ -21,6 +21,9 @@ const container = document.querySelector('#app');
 // Construct a new store with data from the server
 let store = new Store(window.__INITIAL_STATE__);
 
+// Does the user's browser support the HTML5 history API?
+const supportsHistory = 'pushState' in window.history;
+
 /**
  * Renders the given React Application component.
  */
@@ -28,8 +31,10 @@ function renderApp(TheApp) {
   // Firstly, define our full application component, wrapping the given
   // component app with a browser based version of react router.
   const app = (
+    // If the user's browser doesn't support the HTML5 history API then we
+    // will force full page refreshes on each page change.
     <Provider {...store}>
-      <BrowserRouter>
+      <BrowserRouter forceRefresh={!supportsHistory}>
         <TheApp />
       </BrowserRouter>
     </Provider>
