@@ -4,9 +4,13 @@ import Product from './Product';
 function JobsDemoRoute() {
   return (
     <div>
-      <h1>react-jobs Demo</h1>
+      <h1>React Jobs Demo</h1>
       <p>
-        This shows how you can integrate react-jobs into your project.  You
+        This shows how you can integrate
+        {' '}
+        <a href="https://github.com/ctrlplusb/react-jobs">react-jobs</a>
+        {' '}
+        into your project.  You
         can use this library for your data fetching needs.
       </p>
       <p>

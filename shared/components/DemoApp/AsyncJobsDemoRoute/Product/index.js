@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { withJob } from 'react-jobs';
+import { resolveAfter } from './utils';
 
 function Product({ jobResult }) {
   const { id, name, price } = jobResult;
   return (
     <div>
-      Name: {name}, Price: {price}
+      [{id}] - Name: {name}, Price: {price}
     </div>
   );
 }
@@ -17,11 +18,7 @@ Product.propTypes = {
 
 export default withJob({
   work: ({ id }) => {
-    const resolveAfter = (result, time) =>
-      new Promise(resolve => setTimeout(() => resolve(result), time));
-
     // This is where you would use something like `fetch` to hit an API.
-    // We will just mock out some results
     if (id === 1) {
       return resolveAfter({ id, name: 'Spade', price: 1337 }, 1000);
     }
