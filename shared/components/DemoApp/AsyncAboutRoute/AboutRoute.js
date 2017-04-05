@@ -32,7 +32,8 @@ const contributors = [
   },
   {
     name: 'Evgeny Boxer',
-    url: 'https://github.com/evgenyboxer' },
+    url: 'https://github.com/evgenyboxer',
+  },
   {
     name: 'Joe Kohlmann',
     url: 'https://github.com/kohlmannj',
@@ -59,30 +60,26 @@ const contributors = [
   },
 ];
 
-function About() {
+function AboutRoute() {
   return (
     <div style={{ textAlign: 'center' }}>
-      <Helmet title="About" />
+      <Helmet>
+        <title>About</title>
+      </Helmet>
 
       <p>Produced with ❤️ by...</p>
 
       <ul style={{ marginTop: '1rem' }}>
-        {
-          contributors.map(({ name, url }) =>
-            <li key={name}>
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {name}
-              </a>
-            </li>,
-          )
-        }
+        {contributors.map(({ name, url }) => (
+          <li key={name}>
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              {name}
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   );
 }
 
-export default About;
+export default AboutRoute;

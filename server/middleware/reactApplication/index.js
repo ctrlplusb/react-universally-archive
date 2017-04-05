@@ -1,9 +1,9 @@
-
 import React from 'react';
 import Helmet from 'react-helmet';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
-import { withAsyncComponents } from 'react-async-component';
+import { AsyncComponentProvider, createAsyncContext } from 'react-async-component';
+import asyncBootstrapper from 'react-async-bootstrapper';
 import { Provider, useStaticRendering } from 'mobx-react';
 
 import config from '../../../config';
@@ -40,7 +40,10 @@ export default function reactApplicationMiddleware(request, response) {
     return;
   }
 
-  // First create a context for <StaticRouter>, which will allow us to
+  // Create a context for our AsyncComponentProvider.
+  const asyncComponentsContext = createAsyncContext();
+
+  // Create a context for <StaticRouter>, which will allow us to
   // query for the results of the render.
   const reactRouterContext = {};
 
@@ -49,24 +52,28 @@ export default function reactApplicationMiddleware(request, response) {
 
   // Declare our React application.
   const app = (
-    <StaticRouter location={request.url} context={reactRouterContext}>
+    <AsyncComponentProvider asyncContext={asyncComponentsContext}>
       <Provider {...store}>
-        <DemoApp />
+        <StaticRouter location={request.url} context={reactRouterContext}>
+          <DemoApp />
+        </StaticRouter>
       </Provider>
-    </StaticRouter>
+    </AsyncComponentProvider>
   );
 
   // Pass our app into the react-async-component helper so that any async
   // components are resolved for the render.
-  withAsyncComponents(app).then(({ appWithAsyncComponents, state, STATE_IDENTIFIER }) => {
+  asyncBootstrapper(app).then(() => {
+    const appString = renderToString(app);
+
     // Generate the html response.
     const html = renderToStaticMarkup(
       <ServerHTML
-        reactAppString={renderToString(appWithAsyncComponents)}
+        reactAppString={appString}
         nonce={nonce}
         initialState={stringify(store)}
         helmet={Helmet.rewind()}
-        asyncComponents={{ state, STATE_IDENTIFIER }}
+        asyncComponentsState={asyncComponentsContext.getState()}
       />,
     );
 
@@ -81,11 +88,11 @@ export default function reactApplicationMiddleware(request, response) {
     response
       .status(
         reactRouterContext.missed
-          // If the renderResult contains a "missed" match then we set a 404 code.
-          // Our App component will handle the rendering of an Error404 view.
-          ? 404
-          // Otherwise everything is all good and we send a 200 OK status.
-          : 200,
+          ? // If the renderResult contains a "missed" match then we set a 404 code.
+            // Our App component will handle the rendering of an Error404 view.
+            404
+          : // Otherwise everything is all good and we send a 200 OK status.
+            200,
       )
       .send(`<!DOCTYPE html>${html}`);
   });
