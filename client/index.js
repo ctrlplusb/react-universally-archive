@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 import asyncBootstrapper from 'react-async-bootstrapper';
 import { AsyncComponentProvider } from 'react-async-component';
+import { JobProvider } from 'react-jobs';
 
 import './polyfills';
 
@@ -23,6 +24,10 @@ const supportsHistory = 'pushState' in window.history;
 // eslint-disable-next-line no-underscore-dangle
 const asyncComponentsRehydrateState = window.__ASYNC_COMPONENTS_REHYDRATE_STATE__;
 
+// Get any rehydrateState for the jobs.
+// eslint-disable-next-line no-underscore-dangle
+const jobsRehydrateState = window.__JOBS_REHYDRATE_STATE__;
+
 /**
  * Renders the given React Application component.
  */
@@ -32,9 +37,11 @@ function renderApp(TheApp) {
   const app = (
     <ReactHotLoader>
       <AsyncComponentProvider rehydrateState={asyncComponentsRehydrateState}>
-        <BrowserRouter forceRefresh={!supportsHistory}>
-          <TheApp />
-        </BrowserRouter>
+        <JobProvider rehydrateState={jobsRehydrateState}>
+          <BrowserRouter forceRefresh={!supportsHistory}>
+            <TheApp />
+          </BrowserRouter>
+        </JobProvider>
       </AsyncComponentProvider>
     </ReactHotLoader>
   );
