@@ -53,7 +53,10 @@ function renderApp(TheApp) {
   // We use the react-async-component in order to support code splitting of
   // our bundle output. It's important to use this helper.
   // @see https://github.com/ctrlplusb/react-async-component
-  asyncBootstrapper(app).then(() => render(app, container));
+  // NOTE: As mobx does some componentWillMount "event binding" we have to
+  // add the option to ensure componentWillUnmount is called to free up the
+  // bindings for the bootstrapping process.
+  asyncBootstrapper(app, { componentWillUnmount: true }).then(() => render(app, container));
 }
 
 // Execute the first render of our app.
