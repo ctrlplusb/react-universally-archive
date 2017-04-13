@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import About from './About';
 
-describe('<About />', () => {
+import Menu from '../index';
+
+describe('<Home />', () => {
   test('renders', () => {
-    const wrapper = shallow(<About />);
+    const wrapper = shallow(<Menu />);
     expect(wrapper).toMatchSnapshot();
   });
 });

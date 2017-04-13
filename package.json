@@ -13,12 +13,31 @@
     "build:dev": "babel-node internal/scripts/build",
     "clean": "babel-node internal/scripts/clean",
     "deploy": "babel-node internal/scripts/deploy",
-    "develop": "babel-node internal/development",
+    "develop": "DEPLOYMENT=development babel-node internal/development",
     "lint": "eslint client server shared config internal",
+    "precommit": "lint-staged",
     "preinstall": "node internal/scripts/preinstall",
-    "start": "node build/server",
+    "prepush": "jest",
+    "start": "NODE_ENV=production node build/server",
     "test": "jest",
     "test:coverage": "jest --coverage"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier-eslint --write",
+      "git add"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ],
+    "snapshotSerializers": [
+      "<rootDir>/node_modules/enzyme-to-json/serializer"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/(build|internal|node_modules|flow-typed|public)/"
+    ]
   },
   "repository": {
     "type": "git",
@@ -34,19 +53,62 @@
     "webpack"
   ],
   "contributors": [
-    "Alin Porumb",
-    "Benjamin Kniffler <bkniffler@me.com>",
-    "Carson Perrotti <carsonperrotti@gmail.com>",
-    "Christian Glombek <christian.glombek@rwth-aachen.de>",
-    "Christoph Werner",
-    "David Edmondson",
-    "Dion Dirza",
-    "Evgeny Boxer",
-    "Joe Kohlmann <kohlmannj@mac.com>",
-    "Lucian Lature <lucian.lature@gmail.com>",
-    "Steven Enten <steven@enten.fr>",
-    "Sean Matheson <sean@ctrlplusb.com>",
-    "Steven Truesdell <steven@strues.io>"
+    {
+      "name": "Alin Porumb",
+      "url": "https://github.com/alinporumb"
+    },
+    {
+      "name": "Benjamin Kniffler",
+      "url": "https://github.com/bkniffler"
+    },
+    {
+      "name": "Carson Perrotti",
+      "url": "https://github.com/carsonperrotti"
+    },
+    {
+      "name": "Christian Glombek",
+      "url": "https://github.com/LorbusChris"
+    },
+    {
+      "name": "Christoph Werner",
+      "url": "https://github.com/codepunkt"
+    },
+    {
+      "name": "David Edmondson",
+      "url": "https://github.com/threehams"
+    },
+    {
+      "name": "Dion Dirza",
+      "url": "https://github.com/diondirza"
+    },
+    {
+      "name": "Evgeny Boxer",
+      "url": "https://github.com/evgenyboxer"
+    },
+    {
+      "name": "Joe Kohlmann",
+      "url": "https://github.com/kohlmannj"
+    },
+    {
+      "name": "Lucian Lature",
+      "url": "https://github.com/lucianlature"
+    },
+    {
+      "name": "Steven Enten",
+      "url": "https://github.com/enten"
+    },
+    {
+      "name": "Sean Matheson",
+      "url": "https://github.com/ctrlplusb"
+    },
+    {
+      "name": "Steven Truesdell",
+      "url": "https://github.com/strues"
+    },
+    {
+      "name": "Tom",
+      "url": "https://github.com/datoml"
+    }
   ],
   "license": "MIT",
   "bugs": {
@@ -70,19 +132,20 @@
     "colors": "1.1.2",
     "compression": "1.6.2",
     "dotenv": "4.0.0",
-    "express": "4.14.1",
-    "helmet": "3.4.0",
+    "express": "4.15.2",
+    "helmet": "3.5.0",
     "hpp": "0.2.1",
-    "modernizr": "3.3.1",
-    "normalize.css": "5.0.0",
-    "offline-plugin": "4.6.1",
+    "modernizr": "3.4.0",
+    "normalize.css": "6.0.0",
+    "offline-plugin": "4.6.2",
     "react": "15.4.2",
-    "react-async-component": "0.2.2",
+    "react-async-bootstrapper": "1.0.1",
+    "react-async-component": "1.0.0-beta.1",
     "react-dom": "15.4.2",
-    "react-helmet": "4.0.0",
+    "react-helmet": "5.0.2",
     "react-jobs": "0.6.1",
     "react-redux": "5.0.2",
-    "react-router-dom": "4.0.0-beta.6",
+    "react-router-dom": "4.0.0",
     "redux": "3.6.0",
     "redux-thunk": "2.1.0",
     "serialize-javascript": "1.3.0",
@@ -90,49 +153,54 @@
   },
   "devDependencies": {
     "assets-webpack-plugin": "3.5.1",
-    "babel-cli": "6.23.0",
-    "babel-core": "6.23.1",
-    "babel-eslint": "7.1.1",
-    "babel-jest": "18.0.0",
-    "babel-loader": "6.3.2",
+    "babel-cli": "6.24.0",
+    "babel-core": "6.24.0",
+    "babel-eslint": "7.2.1",
+    "babel-jest": "19.0.0",
+    "babel-loader": "6.4.1",
     "babel-plugin-transform-react-constant-elements": "6.23.0",
     "babel-plugin-transform-react-inline-elements": "6.22.0",
     "babel-plugin-transform-react-jsx-self": "6.22.0",
     "babel-plugin-transform-react-jsx-source": "6.22.0",
     "babel-polyfill": "6.23.0",
-    "babel-preset-env": "1.1.8",
-    "babel-preset-latest": "6.22.0",
+    "babel-preset-env": "1.3.2",
     "babel-preset-react": "6.23.0",
     "babel-preset-stage-3": "6.22.0",
     "babel-template": "6.23.0",
     "chokidar": "1.6.1",
-    "css-loader": "0.26.1",
-    "enzyme": "2.7.1",
-    "enzyme-to-json": "1.4.5",
-    "eslint": "3.15.0",
+    "css-loader": "0.28.0",
+    "enzyme": "2.8.0",
+    "enzyme-to-json": "1.5.0",
+    "eslint": "3.19.0",
     "eslint-config-airbnb": "14.1.0",
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-jsx-a11y": "4.0.0",
-    "eslint-plugin-react": "6.10.0",
-    "extract-text-webpack-plugin": "2.0.0-rc.3",
-    "file-loader": "0.10.0",
+    "eslint-plugin-react": "6.10.3",
+    "extract-text-webpack-plugin": "2.1.0",
+    "file-loader": "0.11.1",
     "glob": "7.1.1",
-    "happypack": "3.0.2",
+    "happypack": "3.0.3",
     "html-webpack-plugin": "2.28.0",
-    "jest": "18.1.0",
+    "husky": "0.13.3",
+    "jest": "19.0.2",
+    "lint-staged": "3.4.0",
     "md5": "2.2.1",
     "modernizr-loader": "1.0.1",
-    "node-notifier": "5.0.2",
+    "node-notifier": "5.1.2",
+    "prettier": "0.22.0",
+    "prettier-eslint": "4.4.0",
+    "prettier-eslint-cli": "3.2.0",
     "react-addons-test-utils": "15.4.2",
-    "regenerator-runtime": "0.10.1",
-    "rimraf": "2.5.4",
+    "react-hot-loader": "3.0.0-beta.6",
+    "regenerator-runtime": "0.10.3",
+    "rimraf": "2.6.1",
     "semver": "5.3.0",
-    "source-map-support": "0.4.11",
-    "style-loader": "0.13.1",
-    "webpack": "2.2.1",
-    "webpack-bundle-analyzer": "2.3.0",
-    "webpack-dev-middleware": "1.10.0",
-    "webpack-hot-middleware": "2.16.1",
+    "source-map-support": "0.4.14",
+    "style-loader": "0.16.1",
+    "webpack": "2.3.3",
+    "webpack-bundle-analyzer": "2.3.1",
+    "webpack-dev-middleware": "1.10.1",
+    "webpack-hot-middleware": "2.18.0",
     "webpack-md5-hash": "0.0.5",
     "webpack-node-externals": "1.5.4"
   }

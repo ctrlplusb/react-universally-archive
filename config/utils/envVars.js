@@ -12,25 +12,26 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
-import onlyIf from '../../shared/utils/logic/onlyIf';
+import ifElse from '../../shared/utils/logic/ifElse';
 import removeNil from '../../shared/utils/arrays/removeNil';
 
 // PRIVATES
 
 function registerEnvFile() {
-  const NODE_ENV = process.env.NODE_ENV;
+  const DEPLOYMENT = process.env.DEPLOYMENT;
   const envFile = '.env';
 
   // This is the order in which we will try to resolve an environment configuration
   // file.
   const envFileResolutionOrder = removeNil([
+    // Is there an environment config file at the app root?
+    // This always takes preference.
+    // e.g. /projects/react-universally/.env
+    path.resolve(appRootDir.get(), envFile),
     // Is there an environment config file at the app root for our target
     // environment name?
     // e.g. /projects/react-universally/.env.staging
-    onlyIf(NODE_ENV, path.resolve(appRootDir.get(), `${envFile}.${NODE_ENV}`)),
-    // Is there an environment config file at the app root?
-    // e.g. /projects/react-universally/.env
-    path.resolve(appRootDir.get(), envFile),
+    ifElse(DEPLOYMENT)(path.resolve(appRootDir.get(), `${envFile}.${DEPLOYMENT}`)),
   ]);
 
   // Find the first env file path match.
@@ -38,7 +39,8 @@ function registerEnvFile() {
 
   // If we found an env file match the register it.
   if (envFilePath) {
-    console.log( // eslint-disable-line no-console
+    console.log(
+      // eslint-disable-line no-console
       colors.bgBlue.white(`==> Registering environment variables from: ${envFilePath}`),
     );
     dotenv.config({ path: envFilePath });
@@ -72,13 +74,9 @@ export function string(name, defaultVal) {
  * @return {number} The value.
  */
 export function number(name, defaultVal) {
-  return process.env[name]
-    ? parseInt(process.env[name], 10)
-    : defaultVal;
+  return process.env[name] ? parseInt(process.env[name], 10) : defaultVal;
 }
 
 export function bool(name, defaultVal) {
-  return process.env[name]
-    ? process.env[name] === 'true' || process.env[name] === '1'
-    : defaultVal;
+  return process.env[name] ? process.env[name] === 'true' || process.env[name] === '1' : defaultVal;
 }

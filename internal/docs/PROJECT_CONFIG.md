@@ -16,8 +16,6 @@ You read configuration values using the `<projectroot>/config/index.js` helper, 
  - [Background and Usage](#background-and-usage)
  - [Declaring the configuration values that are safe for client bundles](#declaring-the-configuration-values-that-are-safe-for-client-bundles)
  - [Environment Specific Values](#environment-specifc-values)
- - [Config Highlights](#config-highlights)
-   - [Easily add an "API" bundle](#easily-add-an-api-bundle)
 
 ## Background and Usage
 
@@ -64,27 +62,17 @@ We generally recommend that you don't persist any "env" files within the reposit
 
 If you do however have the requirement to create and persist "env" files for multiple target environments, the system does support it. To do so create a ".env" file that is postfix'ed with the environment you are targeting. For e.g. `.env.development` or `.env.staging` or `.env.production`.
 
-Then when you run your code with the `NODE_ENV=target` set it will load the appropriate "env.target" file.
+In order to target a specific environment configuration file you have to provide a matching `DEPLOYMENT` environment variable. For example:
 
 ```bash
 yarn run build
-NODE_ENV=staging yarn run start # This will look for a .env.staging file
+DEPLOYMENT=staging yarn run start # This will look for a .env.staging file
 ```
+
+ > Note: you may be used to using NODE_ENV to distinguish between environment configuration, however, when using the React ecosystem it is highly recommended that you set NODE_ENV=production any time you want an optimised version of React (and other libs).  Given this requirement, we instead defer to the use of a "DEPLOYMENT" variable. See [here](https://github.com/facebook/react/issues/6582) for more info on this.
 
  > Note: if an environment specific configuration file exists, it will be used over the more generic `.env` file.
 
 As stated before, the application has been configured to accept a mix-match of sources for the environment variables. i.e. you can provide some/all of the environment variables via a `.env` file, and others via the cli/host (e.g. `FOO=bar yarn run build`). This gives you greater flexibility and grants you the opportunity to control the provision of sensitive values (e.g. db connection string).  Please do note that "env" file values will take preference over any values provided by the host/CLI.
 
 > Note: It is recommended that you bind your environment configuration values to the global `./config/values.js`. See the existing items within as an example.
-
-## Config Highlights
-
-Below are some interesting aspects of the configuration file to be aware of.
-
-### Easily add an "API" bundle
-
-A fairly common requirement for a project that scales is to create additional servers bundles, e.g. an API server.
-
-Instead of requiring you to hack the Webpack configuration we have have provided a section within the centralised project configuration that allows you to easily declare additional bundles.  You simply need to provide the source, entry, and output paths - we take care of the rest.  
-
-_IMPORTANT:_ One further requirement for this feature is that within your new server bundle you export the created http listener.  This exported listener will be used by the development server so that it can automatically restart your server any time the source files for it change.

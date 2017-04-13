@@ -1,7 +1,5 @@
-import ifElse from './ifElse';
-import onlyIf from './onlyIf';
+/* eslint-disable import/prefer-default-export */
 
-export {
-  ifElse,
-  onlyIf,
-};
+import ifElse from './ifElse';
+
+export { ifElse };

@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
-import Menu from './index';
 
-describe('<Home />', () => {
+import HomeRoute from '../HomeRoute';
+
+describe('<HomeRoute />', () => {
   test('renders', () => {
-    const wrapper = shallow(<Menu />);
+    const wrapper = shallow(<HomeRoute />);
     expect(wrapper).toMatchSnapshot();
   });
 });

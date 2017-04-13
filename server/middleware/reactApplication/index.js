@@ -1,15 +1,16 @@
 import React from 'react';
-import Helmet from 'react-helmet';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
+import { AsyncComponentProvider, createAsyncContext } from 'react-async-component';
+import { JobProvider, createJobContext } from 'react-jobs';
+import asyncBootstrapper from 'react-async-bootstrapper';
 import { Provider } from 'react-redux';
-import { runJobs } from 'react-jobs/ssr';
+import Helmet from 'react-helmet';
 import configureStore from '../../../shared/redux/configureStore';
 
 import config from '../../../config';
-
-import ServerHTML from './ServerHTML';
 import DemoApp from '../../../shared/components/DemoApp';
+import ServerHTML from './ServerHTML';
 
 /**
  * React application middleware, supports server side rendering.
@@ -25,7 +26,7 @@ export default function reactApplicationMiddleware(request, response) {
   // It's possible to disable SSR, which can be useful in development mode.
   // In this case traditional client side only rendering will occur.
   if (config('disableSSR')) {
-    if (process.env.BUILD_FLAG_IS_DEV) {
+    if (process.env.BUILD_FLAG_IS_DEV === 'true') {
       // eslint-disable-next-line no-console
       console.log('==> Handling react route without SSR');
     }
@@ -36,35 +37,46 @@ export default function reactApplicationMiddleware(request, response) {
     return;
   }
 
-  // Create the redux store.
-  const store = configureStore();
-  const { getState } = store;
+  // Create a context for our AsyncComponentProvider.
+  const asyncComponentsContext = createAsyncContext();
 
-  // First create a context for <StaticRouter>, which will allow us to
+  // Create a context for <StaticRouter>, which will allow us to
   // query for the results of the render.
   const reactRouterContext = {};
 
+  // Create the job context for our provider, this grants
+  // us the ability to track the resolved jobs to send back to the client.
+  const jobContext = createJobContext();
+
+  // Create the redux store.
+  const store = configureStore();
+
   // Declare our React application.
   const app = (
-    <StaticRouter location={request.url} context={reactRouterContext}>
-      <Provider store={store}>
-        <DemoApp />
-      </Provider>
-    </StaticRouter>
+    <AsyncComponentProvider asyncContext={asyncComponentsContext}>
+      <JobProvider jobContext={jobContext}>
+        <StaticRouter location={request.url} context={reactRouterContext}>
+          <Provider store={store}>
+            <DemoApp />
+          </Provider>
+        </StaticRouter>
+      </JobProvider>
+    </AsyncComponentProvider>
   );
 
   // Pass our app into the react-async-component helper so that any async
   // components are resolved for the render.
-  runJobs(app).then(({ appWithAsyncComponents, state, STATE_IDENTIFIER }) => {
-    // Generate the html response.
+  asyncBootstrapper(app).then(() => {
+    const appString = renderToString(app);
+
     const html = renderToStaticMarkup(
       <ServerHTML
-        reactAppString={renderToString(appWithAsyncComponents)}
+        reactAppString={appString}
         nonce={nonce}
         helmet={Helmet.rewind()}
-        asyncComponents={{ state, STATE_IDENTIFIER }}
-        initialState={getState()}
-        jobsTate={{ state, STATE_IDENTIFIER }}
+        routerState={reactRouterContext}
+        jobsState={jobContext.getState()}
+        asyncComponentsState={asyncComponentsContext.getState()}
       />,
     );
 
@@ -76,15 +88,6 @@ export default function reactApplicationMiddleware(request, response) {
       return;
     }
 
-    response
-      .status(
-        reactRouterContext.missed
-          // If the renderResult contains a "missed" match then we set a 404 code.
-          // Our App component will handle the rendering of an Error404 view.
-          ? 404
-          // Otherwise everything is all good and we send a 200 OK status.
-          : 200,
-      )
-      .send(`<!DOCTYPE html>${html}`);
+    response.status(reactRouterContext.status || 200).send(`<!DOCTYPE html>${html}`);
   });
 }
