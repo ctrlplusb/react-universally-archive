@@ -7,7 +7,7 @@ import asyncBootstrapper from 'react-async-bootstrapper';
 import { AsyncComponentProvider } from 'react-async-component';
 import { JobProvider } from 'react-jobs';
 import { Provider as ReduxProvider } from 'react-redux';
-import { configureStore } from '../shared/redux/configureStore';
+import configureStore from '../shared/redux/configureStore';
 
 import './polyfills';
 

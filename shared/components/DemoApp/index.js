@@ -14,7 +14,7 @@ import Header from './Header';
 
 import AsyncHomeRoute from './AsyncHomeRoute';
 import AsyncCounterRoute from './AsyncCounterRoute';
-import AsyncPosts from './AsyncPosts';
+import AsyncPosts from './AsyncPostsRoute';
 import AsyncAboutRoute from './AsyncAboutRoute';
 
 function DemoApp() {

@@ -3,7 +3,7 @@ import { Link, Match } from 'react-router-dom';
 import Helmet from 'react-helmet';
 import Post from './Post';
 
-function Posts() {
+function PostsRoute() {
   return (
     <div>
       <Helmet title="Posts" />
@@ -20,4 +20,4 @@ function Posts() {
   );
 }
 
-export default Posts;
+export default PostsRoute;
