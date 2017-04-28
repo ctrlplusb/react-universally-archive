@@ -68,7 +68,8 @@ class HotDevelopment {
 
     const nodeBundles = [initializeBundle('server', config('bundles.server'))].concat(
       Object.keys(config('additionalNodeBundles')).map(name =>
-        initializeBundle(name, config('additionalNodeBundles')[name])),
+        initializeBundle(name, config('additionalNodeBundles')[name]),
+      ),
     );
 
     Promise.resolve(
@@ -101,7 +102,7 @@ class HotDevelopment {
   }
 
   dispose() {
-    const safeDisposer = server => server ? server.dispose() : Promise.resolve();
+    const safeDisposer = server => (server ? server.dispose() : Promise.resolve());
 
     // First the hot client server.
     return (
