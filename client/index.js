@@ -34,7 +34,7 @@ const asyncComponentsRehydrateState = window.__ASYNC_COMPONENTS_REHYDRATE_STATE_
 
 // Get any "rehydrate" state sent back by the server
 // eslint-disable-next-line no-underscore-dangle
-const rehydrateState = window.__JOBS_STATE__;
+const rehydrateState = window.__JOBS_REHYDRATE_STATE__;
 
 /**
  * Renders the given React Application component.

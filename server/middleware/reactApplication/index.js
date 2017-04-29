@@ -38,7 +38,7 @@ export default function reactApplicationMiddleware(request, response) {
   }
 
   // Create a context for our AsyncComponentProvider.
-  const asyncComponentsContext = createAsyncContext();
+  const asyncContext = createAsyncContext();
 
   // Create a context for <StaticRouter>, which will allow us to
   // query for the results of the render.
@@ -53,7 +53,7 @@ export default function reactApplicationMiddleware(request, response) {
 
   // Declare our React application.
   const app = (
-    <AsyncComponentProvider asyncContext={asyncComponentsContext}>
+    <AsyncComponentProvider asyncContext={asyncContext}>
       <JobProvider jobContext={jobContext}>
         <StaticRouter location={request.url} context={reactRouterContext}>
           <Provider store={store}>
@@ -67,6 +67,7 @@ export default function reactApplicationMiddleware(request, response) {
   // Pass our app into the react-async-component helper so that any async
   // components are resolved for the render.
   asyncBootstrapper(app).then(() => {
+    // We can now render our app
     const appString = renderToString(app);
 
     const html = renderToStaticMarkup(
@@ -75,7 +76,7 @@ export default function reactApplicationMiddleware(request, response) {
         nonce={nonce}
         helmet={Helmet.rewind()}
         jobsState={jobContext.getState()}
-        asyncComponentsState={asyncComponentsContext.getState()}
+        asyncComponentsState={asyncContext.getState()}
       />,
     );
 

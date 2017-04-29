@@ -40,7 +40,7 @@ function scriptTag(jsFilePath) {
 // COMPONENT
 
 function ServerHTML(props) {
-  const { asyncComponentsState, helmet, nonce, reactAppString } = props;
+  const { asyncComponentsState, jobsState, helmet, nonce, reactAppString } = props;
 
   // Creates an inline script definition that is protected by the nonce.
   const inlineScript = body => (
@@ -68,6 +68,12 @@ function ServerHTML(props) {
       inlineScript(
         `window.__ASYNC_COMPONENTS_REHYDRATE_STATE__=${serialize(asyncComponentsState)};`,
       ),
+    ),
+    // Bind our jobs state so the client knows which ones
+    // to rehydrate so that the checksum matches the server response.
+    // @see https://github.com/ctrlplusb/react-jobs
+    ifElse(jobsState)(() =>
+      inlineScript(`window.__JOBS_REHYDRATE_STATE__=${serialize(jobsState)};`),
     ),
     // Enable the polyfill io script?
     // This can't be configured within a react-helmet component as we
@@ -105,6 +111,8 @@ function ServerHTML(props) {
 ServerHTML.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   asyncComponentsState: PropTypes.object,
+  // eslint-disable-next-line react/forbid-prop-types
+  jobsState: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
   helmet: PropTypes.object,
   nonce: PropTypes.string,
