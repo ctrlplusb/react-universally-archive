@@ -78,12 +78,14 @@ function Post({ jobResult }) {
 export default withJob({
   work: (props) => {
     const { id } = props.match.params;
-    return fetch(`http://jsonplaceholder.typicode.com/posts/${id}`).then(r => r.json());
+    return fetch(`http://jsonplaceholder.typicode.com/posts/${id}`)
+      .then(r => r.json())
+      .catch(err => console.log(err));
   },
   shouldWorkAgain: (prev, next) => prev.match.params.id !== next.match.params.id,
   LoadingComponent: () => <div>Loading...</div>,
 })(Post);
 
 Post.propTypes = {
-  // jobResult: PropTypes.shape(PropTypes.any).isRequired,
+  jobResult: PropTypes.shape(PropTypes.any).isRequired,
 };
