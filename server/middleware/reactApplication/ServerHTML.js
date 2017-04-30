@@ -6,8 +6,7 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable react/no-array-index-key */
 
-import React, { Children } from 'react';
-import PropTypes from 'prop-types';
+import React, { Children, PropTypes } from 'react';
 import serialize from 'serialize-javascript';
 
 import config from '../../../config';
@@ -40,7 +39,15 @@ function scriptTag(jsFilePath) {
 // COMPONENT
 
 function ServerHTML(props) {
-  const { asyncComponentsState, jobsState, helmet, nonce, reactAppString } = props;
+  const {
+    asyncComponentsState,
+    helmet,
+    jobsState,
+    nonce,
+    reactAppString,
+    routerState,
+    storeState,
+  } = props;
 
   // Creates an inline script definition that is protected by the nonce.
   const inlineScript = body => (
@@ -57,10 +64,14 @@ function ServerHTML(props) {
   ]);
 
   const bodyElements = removeNil([
+    // Bind our redux store state so the client knows how to hydrate his one
+    ifElse(storeState)(() => inlineScript(`window.__APP_STATE__=${serialize(storeState)};`)),
+
     // Binds the client configuration object to the window object so
     // that we can safely expose some configuration values to the
     // client bundle that gets executed in the browser.
     <ClientConfig nonce={nonce} />,
+
     // Bind our async components state so the client knows which ones
     // to initialise so that the checksum matches the server response.
     // @see https://github.com/ctrlplusb/react-async-component
@@ -69,17 +80,18 @@ function ServerHTML(props) {
         `window.__ASYNC_COMPONENTS_REHYDRATE_STATE__=${serialize(asyncComponentsState)};`,
       ),
     ),
-    // Bind our jobs state so the client knows which ones
-    // to rehydrate so that the checksum matches the server response.
-    // @see https://github.com/ctrlplusb/react-jobs
-    ifElse(jobsState)(() =>
-      inlineScript(`window.__JOBS_REHYDRATE_STATE__=${serialize(jobsState)};`),
-    ),
+
+    ifElse(jobsState)(() => inlineScript(`window.__JOBS_STATE__=${serialize(jobsState)}`)),
+
+    ifElse(routerState)(() => inlineScript(`window.__ROUTER_STATE__=${serialize(routerState)}`)),
+
     // Enable the polyfill io script?
     // This can't be configured within a react-helmet component as we
     // may need the polyfill's before our client JS gets parsed.
     ifElse(config('polyfillIO.enabled'))(() =>
-      scriptTag(`${config('polyfillIO.url')}?features=${config('polyfillIO.features').join(',')}`),
+      scriptTag(
+        `https://cdn.polyfill.io/v2/polyfill.min.js?features=${config('polyfillIO.features').join(',')}`,
+      ),
     ),
     // When we are in development mode our development server will
     // generate a vendor DLL in order to dramatically reduce our
@@ -112,11 +124,15 @@ ServerHTML.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   asyncComponentsState: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
-  jobsState: PropTypes.object,
-  // eslint-disable-next-line react/forbid-prop-types
   helmet: PropTypes.object,
+  // eslint-disable-next-line react/forbid-prop-types
+  jobsState: PropTypes.object,
   nonce: PropTypes.string,
   reactAppString: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  routerState: PropTypes.object,
+  // eslint-disable-next-line react/forbid-prop-types
+  storeState: PropTypes.object,
 };
 
 // EXPORT
