@@ -1,26 +1,26 @@
 import React, { PropTypes } from 'react';
-// import { compose } from 'redux';
-// import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { withJob } from 'react-jobs';
 import Helmet from 'react-helmet';
-// import * as PostActions from '../../../../actions/posts';
-// import * as FromState from '../../../../reducers';
+import * as PostActions from '../../../../actions/posts';
+import * as FromState from '../../../../reducers';
 
-function Post({ jobResult }) {
-  const { body, title } = jobResult;
-  if (!jobResult) {
+function Post({ post }) {
+  if (!post) {
     // Post hasn't been fetched yet. It would be better if we had a "status"
     // reducer attached to our posts which gave us a bit more insight, such
     // as whether the post is currently being fetched, or if the fetch failed.
     return null;
   }
 
+  const { title, body } = post;
+
   return (
     <div>
       <Helmet title={`Posts - ${title}`} />
 
       <h1>{title}</h1>
-
       <div>
         {body}
       </div>
@@ -28,15 +28,15 @@ function Post({ jobResult }) {
   );
 }
 
-// function mapStateToProps(state, { params: { id } }) {
-//   return {
-//     post: FromState.getPostById(state, id),
-//   };
-// }
-//
-// const mapActionsToProps = {
-//   fetchPost: PostActions.fetch,
-// };
+function mapStateToProps(state, { match }) {
+  return {
+    post: FromState.getPostById(state, match.params.id),
+  };
+}
+
+const mapActionsToProps = {
+  fetchPost: PostActions.fetch,
+};
 
 // We use the "compose" function from redux (but the lodash/ramda/etc equivalent
 // would do the same), so that we can neatly attach multiple higher order
@@ -53,39 +53,28 @@ function Post({ jobResult }) {
 // runner knows when the job is complete.  You will also see that we first
 // check to see if the post already exists within the state, if so we just
 // return it which would then result in a synchronous execution of our component.
-// export default compose(
-//   connect(mapStateToProps, mapActionsToProps),
-//   withJob({
-//     work: (prop) => {
-//       console.log(prop);
-//     // work: ({ params: { id }, post, fetchPostprop) => {
-//       if (post) {
-//         // We already have a post, just return true.
-//         return true;
-//       }
-//       // Execute the redux-thunk powered action that returns a Promise and
-//       // fetches the post.
-//       return fetchPost(id);
-//     },
-//     // {
-//     //   // Any time the post id changes we need to trigger the work.
-//     //   shouldWorkAgain: (prevProps, nextProps) =>
-//     //     prevProps.params.id !== nextProps.params.id,
-//     // },
-//   }),
-// )(Post);
+export default compose(
+  connect(mapStateToProps, mapActionsToProps),
+  withJob({
+    work: ({ match, post, fetchPost }) => {
+      if (post) {
+        // We already have a post, just return true.
+        return true;
+      }
 
-export default withJob({
-  work: (props) => {
-    const { id } = props.match.params;
-    return fetch(`http://jsonplaceholder.typicode.com/posts/${id}`)
-      .then(r => r.json())
-      .catch(err => console.log(err));
-  },
-  shouldWorkAgain: (prev, next) => prev.match.params.id !== next.match.params.id,
-  LoadingComponent: () => <div>Loading...</div>,
-})(Post);
+      // Execute the redux-thunk powered action that returns a Promise and
+      // fetches the post.
+      return fetchPost(match.params.id);
+    },
+    // Any time the post id changes we need to trigger the work.
+    shouldWorkAgain: (prevProps, nextProps) => prevProps.params.id !== nextProps.params.id,
+  }),
+)(Post);
 
 Post.propTypes = {
-  jobResult: PropTypes.shape(PropTypes.any).isRequired,
+  post: PropTypes.shape(PropTypes.any),
+};
+
+Post.defaultProps = {
+  post: {},
 };
