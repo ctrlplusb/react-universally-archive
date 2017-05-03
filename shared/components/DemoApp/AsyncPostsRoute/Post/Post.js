@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes, { string } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withJob } from 'react-jobs';
@@ -6,7 +7,7 @@ import Helmet from 'react-helmet';
 import * as PostActions from '../../../../actions/posts';
 import * as FromState from '../../../../reducers';
 
-function Post({ post }) {
+export function Post({ post }) {
   if (!post) {
     // Post hasn't been fetched yet. It would be better if we had a "status"
     // reducer attached to our posts which gave us a bit more insight, such
@@ -72,7 +73,10 @@ export default compose(
 )(Post);
 
 Post.propTypes = {
-  post: PropTypes.shape(PropTypes.any),
+  post: PropTypes.shape({
+    title: string,
+    body: string,
+  }),
 };
 
 Post.defaultProps = {
