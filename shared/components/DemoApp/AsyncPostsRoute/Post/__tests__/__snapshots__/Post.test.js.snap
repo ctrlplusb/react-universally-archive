@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<HomeRoute /> renders the snapshot 1`] = `
+exports[`<Post /> renders the snapshot 1`] = `
 <div>
   <HelmetWrapper
     encodeSpecialCharacters={true}
