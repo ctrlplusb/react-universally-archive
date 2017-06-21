@@ -90,11 +90,12 @@ const values = {
     scriptSrc: [
       // Allow scripts from cdn.polyfill.io so that we can import the
       // polyfill.
-      'cdn.polyfill.io',
+      'http://cdn.polyfill.io',
+      'https://cdn.polyfill.io',
     ],
     styleSrc: [
-      'cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css',
-      'fonts.googleapis.com/css',
+      'http://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css',
+      'http://fonts.googleapis.com/css',
     ],
   },
 
