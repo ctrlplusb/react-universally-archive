@@ -6,7 +6,8 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable react/no-array-index-key */
 
-import React, { Children, PropTypes } from 'react';
+import React, { Children } from 'react';
+import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
 
 import config from '../../../config';
@@ -39,13 +40,7 @@ function scriptTag(jsFilePath) {
 // COMPONENT
 
 function ServerHTML(props) {
-  const {
-    asyncComponentsState,
-    jobsState,
-    helmet,
-    nonce,
-    reactAppString,
-  } = props;
+  const { asyncComponentsState, jobsState, helmet, nonce, reactAppString } = props;
 
   // Creates an inline script definition that is protected by the nonce.
   const inlineScript = body => (
@@ -72,19 +67,22 @@ function ServerHTML(props) {
     ifElse(asyncComponentsState)(() =>
       inlineScript(
         `window.__ASYNC_COMPONENTS_REHYDRATE_STATE__=${serialize(asyncComponentsState)};`,
-      )),
+      ),
+    ),
     // Bind our jobs state so the client knows which ones
     // to rehydrate so that the checksum matches the server response.
     // @see https://github.com/ctrlplusb/react-jobs
     ifElse(jobsState)(() =>
-      inlineScript(`window.__JOBS_REHYDRATE_STATE__=${serialize(jobsState)};`)),
+      inlineScript(`window.__JOBS_REHYDRATE_STATE__=${serialize(jobsState)};`),
+    ),
     // Enable the polyfill io script?
     // This can't be configured within a react-helmet component as we
     // may need the polyfill's before our client JS gets parsed.
     ifElse(config('polyfillIO.enabled'))(() =>
       scriptTag(
-        `https://cdn.polyfill.io/v2/polyfill.min.js?features=${config('polyfillIO.features').join(',')}`,
-      )),
+        `${config('polyfillIO.url')}?features=${config('polyfillIO.features').join(',')}&flags=gated`,
+      ),
+    ),
     // When we are in development mode our development server will
     // generate a vendor DLL in order to dramatically reduce our
     // compilation times.  Therefore we need to inject the path to the
@@ -94,7 +92,8 @@ function ServerHTML(props) {
     )(() =>
       scriptTag(
         `${config('bundles.client.webPath')}${config('bundles.client.devVendorDLL.name')}.js?t=${Date.now()}`,
-      )),
+      ),
+    ),
     ifElse(clientEntryAssets && clientEntryAssets.js)(() => scriptTag(clientEntryAssets.js)),
     ...ifElse(helmet)(() => helmet.script.toComponent(), []),
   ]);
