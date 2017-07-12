@@ -35,11 +35,13 @@ const cspConfig = {
       // recognise that we have also provided a nonce configuration and
       // use the stricter rule.
       "'unsafe-inline'",
+      '//cdn.jsdelivr.net',
     ],
     styleSrc: [
       "'self'",
       // Webpack generates JS that loads our CSS, so this is needed:
       "'unsafe-inline'",
+      '//cdn.jsdelivr.net',
       'blob:',
     ],
   },
@@ -119,7 +121,8 @@ const securityMiddleware = [
   // The CSP configuration is an optional item for helmet, however you should
   // not remove it without making a serious consideration that you do not
   // require the added security.
-  helmet.contentSecurityPolicy(cspConfig),
+
+  // helmet.contentSecurityPolicy(cspConfig),
 ];
 
 export default securityMiddleware;

@@ -1,9 +1,9 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import axios from 'axios';
-import reducer from '../reducers';
+import getReducers from '../reducers';
 
-function configureStore(initialState) {
+function configureStore(apolloClient, initialState) {
   const enhancers = compose(
     // Middleware store enhancer.
     applyMiddleware(
@@ -12,23 +12,24 @@ function configureStore(initialState) {
       // preconfigured axios instance which can be used to fetch data with.
       // @see https://github.com/gaearon/redux-thunk
       thunk.withExtraArgument({ axios }),
+      apolloClient.middleware(),
     ),
     // Redux Dev Tools store enhancer.
     // @see https://github.com/zalmoxisus/redux-devtools-extension
     // We only want this enhancer enabled for development and when in a browser
     // with the extension installed.
-    process.env.NODE_ENV === 'development'
-      && typeof window !== 'undefined'
-      && typeof window.devToolsExtension !== 'undefined'
-      // Call the brower extension function to create the enhancer.
-      ? window.devToolsExtension()
-      // Else we return a no-op function.
-      : f => f,
+    process.env.NODE_ENV === 'development' &&
+    typeof window !== 'undefined' &&
+    typeof window.devToolsExtension !== 'undefined'
+      ? // Call the brower extension function to create the enhancer.
+        window.devToolsExtension()
+      : // Else we return a no-op function.
+        f => f,
   );
 
   const store = initialState
-    ? createStore(reducer, initialState, enhancers)
-    : createStore(reducer, enhancers);
+    ? createStore(getReducers(apolloClient), initialState, enhancers)
+    : createStore(getReducers(apolloClient), enhancers);
 
   if (process.env.NODE_ENV === 'development' && module.hot) {
     // Enable Webpack hot module replacement for reducers. This is so that we

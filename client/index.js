@@ -1,13 +1,13 @@
 /* eslint-disable global-require */
-
+import 'isomorphic-fetch/fetch-npm-browserify';
 import React from 'react';
 import { render } from 'react-dom';
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 import asyncBootstrapper from 'react-async-bootstrapper';
 import { AsyncComponentProvider } from 'react-async-component';
-import { JobProvider } from 'react-jobs';
-import { Provider } from 'react-redux';
+import { ApolloProvider, createBatchingNetworkInterface } from 'react-apollo';
 import configureStore from '../shared/redux/configureStore';
+import createApolloClient from '../shared/createApolloClient';
 
 import './polyfills';
 
@@ -16,11 +16,30 @@ import DemoApp from '../shared/components/DemoApp';
 
 // Get the DOM Element that will host our React application.
 const container = document.querySelector('#app');
+// Apollo network interface
+const networkInterface = createBatchingNetworkInterface({
+  uri: 'http://localhost:1337/graphql',
+  batchInterval: 10,
+});
+networkInterface.use([
+  {
+    applyBatchMiddleware(req, next) {
+      // If headers don't exist for some reason
+      // create them.
+      if (!req.options.headers) {
+        req.options.headers = {};
+      }
+      next();
+    },
+  },
+]);
 
+const apolloClient = createApolloClient(networkInterface);
 // Create our Redux store.
 const store = configureStore(
+  apolloClient,
   // Server side rendering would have mounted our state on this global.
-  window.__APP_STATE__, // eslint-disable-line no-underscore-dangle
+  window.__APOLLO_STATE__, // eslint-disable-line no-underscore-dangle
 );
 
 // Does the user's browser support the HTML5 history API?
@@ -45,13 +64,11 @@ function renderApp(TheApp) {
   const app = (
     <ReactHotLoader>
       <AsyncComponentProvider rehydrateState={asyncComponentsRehydrateState}>
-        <JobProvider rehydrateState={rehydrateState}>
-          <Provider store={store}>
-            <BrowserRouter forceRefresh={!supportsHistory}>
-              <TheApp />
-            </BrowserRouter>
-          </Provider>
-        </JobProvider>
+        <ApolloProvider store={store} client={apolloClient}>
+          <BrowserRouter forceRefresh={!supportsHistory}>
+            <TheApp />
+          </BrowserRouter>
+        </ApolloProvider>
       </AsyncComponentProvider>
     </ReactHotLoader>
   );

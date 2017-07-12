@@ -1,18 +1,15 @@
 import React from 'react';
-import { Link, Route } from 'react-router-dom';
+import Route from 'react-router-dom/Route';
+import Switch from 'react-router-dom/Switch';
 import Post from './Post';
+import Posts from './Posts';
 
-const AsyncPostsRoute = () => (
+const AsyncPostsRoute = () =>
   <div>
-    <ul>
-      <li><Link to="/posts/1">Post 1</Link></li>
-      <li><Link to="/posts/2">Post 2</Link></li>
-    </ul>
-
-    <hr />
-
-    <Route path="/posts/:id" component={Post} />
-  </div>
-);
+    <Switch>
+      <Route path="/posts/:id" component={Post} />
+      <Route path="/posts" exact component={Posts} />
+    </Switch>
+  </div>;
 
 export default AsyncPostsRoute;

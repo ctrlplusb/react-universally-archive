@@ -6,8 +6,10 @@ import { JobProvider, createJobContext } from 'react-jobs';
 import asyncBootstrapper from 'react-async-bootstrapper';
 import { Provider } from 'react-redux';
 import Helmet from 'react-helmet';
+import { ApolloProvider, getDataFromTree } from 'react-apollo';
+import { createBatchingNetworkInterface } from 'apollo-client';
 import configureStore from '../../../shared/redux/configureStore';
-
+import createApolloClient from '../../../shared/createApolloClient';
 import config from '../../../config';
 import DemoApp from '../../../shared/components/DemoApp';
 import ServerHTML from './ServerHTML';
@@ -15,14 +17,22 @@ import ServerHTML from './ServerHTML';
 /**
  * React application middleware, supports server side rendering.
  */
-export default function reactApplicationMiddleware(request, response) {
+export default (async function reactApplicationMiddleware(request, response) {
   // Ensure a nonce has been provided to us.
   // See the server/middleware/security.js for more info.
   if (typeof response.locals.nonce !== 'string') {
     throw new Error('A "nonce" value has not been attached to the response');
   }
   const nonce = response.locals.nonce;
-
+  const networkInterface = createBatchingNetworkInterface({
+    uri: 'http://localhost:1337/graphql',
+    opts: {
+      credentials: 'same-origin',
+      headers: request.headers,
+    },
+    batchInterval: 20,
+  });
+  const apolloClient = createApolloClient(networkInterface);
   // It's possible to disable SSR, which can be useful in development mode.
   // In this case traditional client side only rendering will occur.
   if (config('disableSSR')) {
@@ -46,24 +56,22 @@ export default function reactApplicationMiddleware(request, response) {
 
   // Create the job context for our provider, this grants
   // us the ability to track the resolved jobs to send back to the client.
-  const jobContext = createJobContext();
-
+  // const jobContext = createJobContext();
+  const initialState = {};
   // Create the redux store.
-  const store = configureStore();
+  const store = configureStore(apolloClient, initialState);
 
   // Declare our React application.
   const app = (
     <AsyncComponentProvider asyncContext={asyncContext}>
-      <JobProvider jobContext={jobContext}>
-        <StaticRouter location={request.url} context={reactRouterContext}>
-          <Provider store={store}>
-            <DemoApp />
-          </Provider>
-        </StaticRouter>
-      </JobProvider>
+      <StaticRouter location={request.url} context={reactRouterContext}>
+        <ApolloProvider store={store} client={apolloClient}>
+          <DemoApp />
+        </ApolloProvider>
+      </StaticRouter>
     </AsyncComponentProvider>
   );
-
+  await getDataFromTree(app);
   // Pass our app into the react-async-component helper so that any async
   // components are resolved for the render.
   asyncBootstrapper(app).then(() => {
@@ -76,7 +84,6 @@ export default function reactApplicationMiddleware(request, response) {
         helmet={Helmet.rewind()}
         storeState={store.getState()}
         routerState={reactRouterContext}
-        jobsState={jobContext.getState()}
         asyncComponentsState={asyncContext.getState()}
       />,
     );
@@ -91,4 +98,4 @@ export default function reactApplicationMiddleware(request, response) {
 
     response.status(reactRouterContext.status || 200).send(`<!DOCTYPE html>${html}`);
   });
-}
+});

@@ -2,13 +2,6 @@ import { combineReducers } from 'redux';
 import posts, * as FromPosts from './posts';
 
 // -----------------------------------------------------------------------------
-// REDUCER
-
-const rootReducer = combineReducers({
-  posts,
-});
-
-// -----------------------------------------------------------------------------
 // EXPORTED SELECTORS
 
 export function getPostById(state, id) {
@@ -18,4 +11,9 @@ export function getPostById(state, id) {
 // -----------------------------------------------------------------------------
 // REDUCER EXPORT
 
-export default rootReducer;
+export default function getReducers(apolloClient) {
+  return combineReducers({
+    apollo: apolloClient.reducer(),
+    posts,
+  });
+}

@@ -73,7 +73,8 @@ const values = {
   htmlPage: {
     titleTemplate: 'React, Universally - %s',
     defaultTitle: 'React, Universally',
-    description: 'A starter kit giving you the minimum requirements for a production ready universal react application.',
+    description:
+      'A starter kit giving you the minimum requirements for a production ready universal react application.',
   },
 
   // Content Security Policy (CSP)
@@ -220,6 +221,9 @@ const values = {
           'react-redux',
           'redux-thunk',
           'axios',
+          'apollo-client',
+          'react-apollo',
+          'graphql-tag',
         ],
 
         // The name of the vendor DLL.

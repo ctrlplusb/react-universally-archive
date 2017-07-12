@@ -50,9 +50,8 @@ function ServerHTML(props) {
   } = props;
 
   // Creates an inline script definition that is protected by the nonce.
-  const inlineScript = body => (
-    <script nonce={nonce} type="text/javascript" dangerouslySetInnerHTML={{ __html: body }} />
-  );
+  const inlineScript = body =>
+    <script nonce={nonce} type="text/javascript" dangerouslySetInnerHTML={{ __html: body }} />;
 
   const headerElements = removeNil([
     ...ifElse(helmet)(() => helmet.title.toComponent(), []),
@@ -65,7 +64,7 @@ function ServerHTML(props) {
 
   const bodyElements = removeNil([
     // Bind our redux store state so the client knows how to hydrate his one
-    ifElse(storeState)(() => inlineScript(`window.__APP_STATE__=${serialize(storeState)};`)),
+    ifElse(storeState)(() => inlineScript(`window.__APOLLO_STATE__=${serialize(storeState)};`)),
 
     // Binds the client configuration object to the window object so
     // that we can safely expose some configuration values to the
@@ -81,8 +80,6 @@ function ServerHTML(props) {
       ),
     ),
 
-    ifElse(jobsState)(() => inlineScript(`window.__JOBS_STATE__=${serialize(jobsState)}`)),
-
     ifElse(routerState)(() => inlineScript(`window.__ROUTER_STATE__=${serialize(routerState)}`)),
 
     // Enable the polyfill io script?
@@ -90,7 +87,9 @@ function ServerHTML(props) {
     // may need the polyfill's before our client JS gets parsed.
     ifElse(config('polyfillIO.enabled'))(() =>
       scriptTag(
-        `https://cdn.polyfill.io/v2/polyfill.min.js?features=${config('polyfillIO.features').join(',')}`,
+        `https://cdn.polyfill.io/v2/polyfill.min.js?features=${config('polyfillIO.features').join(
+          ',',
+        )}`,
       ),
     ),
     // When we are in development mode our development server will
@@ -101,7 +100,9 @@ function ServerHTML(props) {
       process.env.BUILD_FLAG_IS_DEV === 'true' && config('bundles.client.devVendorDLL.enabled'),
     )(() =>
       scriptTag(
-        `${config('bundles.client.webPath')}${config('bundles.client.devVendorDLL.name')}.js?t=${Date.now()}`,
+        `${config('bundles.client.webPath')}${config(
+          'bundles.client.devVendorDLL.name',
+        )}.js?t=${Date.now()}`,
       ),
     ),
     ifElse(clientEntryAssets && clientEntryAssets.js)(() => scriptTag(clientEntryAssets.js)),
@@ -111,10 +112,16 @@ function ServerHTML(props) {
   return (
     <HTML
       htmlAttributes={ifElse(helmet)(() => helmet.htmlAttributes.toComponent(), null)}
-      headerElements={headerElements.map((x, idx) => (
-        <KeyedComponent key={idx}>{x}</KeyedComponent>
-      ))}
-      bodyElements={bodyElements.map((x, idx) => <KeyedComponent key={idx}>{x}</KeyedComponent>)}
+      headerElements={headerElements.map((x, idx) =>
+        <KeyedComponent key={idx}>
+          {x}
+        </KeyedComponent>,
+      )}
+      bodyElements={bodyElements.map((x, idx) =>
+        <KeyedComponent key={idx}>
+          {x}
+        </KeyedComponent>,
+      )}
       appBodyString={reactAppString}
     />
   );
