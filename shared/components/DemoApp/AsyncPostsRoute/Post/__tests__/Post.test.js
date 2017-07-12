@@ -5,18 +5,23 @@ import { shallow } from 'enzyme';
 
 import { Post } from '../Post';
 
-const FakePost = {
-  title: 'Test',
-  body: 'Test this post',
+const data = {
+  loading: false,
+  singlePost: {
+    id: 1,
+    title: 'hi',
+    body: 'boo',
+    userId: '3',
+  },
 };
 
 describe('<Post />', () => {
   test('renders header', () => {
-    const wrapper = shallow(<Post post={FakePost} />);
+    const wrapper = shallow(<Post data={data} />);
     expect(wrapper.find('h1').length).toBe(1);
   });
   test('renders the snapshot', () => {
-    const wrapper = shallow(<Post post={FakePost} />);
+    const wrapper = shallow(<Post data={data} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

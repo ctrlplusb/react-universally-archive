@@ -5,7 +5,7 @@ import { gql, graphql } from 'react-apollo';
 import Helmet from 'react-helmet';
 // import SINGLE_POST_QUERY from './singlePost.graphql';
 
-class Post extends Component {
+export class Post extends Component {
   render() {
     const { data: { loading, singlePost } } = this.props;
     if (loading) {
