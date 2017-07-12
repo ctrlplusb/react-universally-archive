@@ -68,7 +68,7 @@ export default compose(
       return fetchPost(match.params.id);
     },
     // Any time the post id changes we need to trigger the work.
-    shouldWorkAgain: (prevProps, nextProps) => prevProps.params.id !== nextProps.params.id,
+    shouldWorkAgain: (prevProps, nextProps) => prevProps.match.params.id !== nextProps.match.params.id,
   }),
 )(Post);
 
