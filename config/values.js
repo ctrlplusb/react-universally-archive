@@ -16,6 +16,8 @@ const values = {
     // This is here as an example showing that you can expose variables
     // that were potentially provivded by the environment
     welcomeMessage: true,
+    graphqlUri: true,
+    graphqlBatch: true,
     // We only need to expose the enabled flag of the service worker.
     serviceWorker: {
       enabled: true,
@@ -30,7 +32,8 @@ const values = {
   host: EnvVars.string('HOST', '0.0.0.0'),
   // The port on which the server should run.
   port: EnvVars.number('PORT', 1337),
-
+  graphqlUri: EnvVars.string('GRAPHQL_URI', 'http://localhost:1337/graphql'),
+  graphqlBatch: false,
   // The port on which the client bundle development server should run.
   clientDevServerPort: EnvVars.number('CLIENT_DEV_PORT', 7331),
 
@@ -92,10 +95,13 @@ const values = {
       // Allow scripts from cdn.polyfill.io so that we can import the
       // polyfill.
       'cdn.polyfill.io',
+      'cdn.jsdelivr.net',
+      "'unsafe-inline'",
     ],
     styleSrc: [
       'cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css',
       'fonts.googleapis.com/css',
+      'cdn.jsdelivr.net',
     ],
   },
 
@@ -224,6 +230,7 @@ const values = {
           'apollo-client',
           'react-apollo',
           'graphql-tag',
+          'graphql-tools',
         ],
 
         // The name of the vendor DLL.

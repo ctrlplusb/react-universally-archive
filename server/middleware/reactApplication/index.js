@@ -1,15 +1,12 @@
 import React from 'react';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
-import { StaticRouter } from 'react-router-dom';
+import StaticRouter from 'react-router-dom/StaticRouter';
 import { AsyncComponentProvider, createAsyncContext } from 'react-async-component';
-import { JobProvider, createJobContext } from 'react-jobs';
 import asyncBootstrapper from 'react-async-bootstrapper';
-import { Provider } from 'react-redux';
 import Helmet from 'react-helmet';
 import { ApolloProvider, getDataFromTree } from 'react-apollo';
-import { createBatchingNetworkInterface } from 'apollo-client';
 import configureStore from '../../../shared/redux/configureStore';
-import createApolloClient from '../../../shared/createApolloClient';
+import { createApolloClient, getNetworkInterface } from '../../../shared/apollo';
 import config from '../../../config';
 import DemoApp from '../../../shared/components/DemoApp';
 import ServerHTML from './ServerHTML';
@@ -24,15 +21,22 @@ export default (async function reactApplicationMiddleware(request, response) {
     throw new Error('A "nonce" value has not been attached to the response');
   }
   const nonce = response.locals.nonce;
-  const networkInterface = createBatchingNetworkInterface({
-    uri: 'http://localhost:1337/graphql',
-    opts: {
-      credentials: 'same-origin',
-      headers: request.headers,
-    },
-    batchInterval: 20,
+
+  // Apollo setup
+  // all options described below
+  // @see http://dev.apollodata.com/core/apollo-client-api.html#constructor
+  const clientOptions = {
+    ssrMode: true,
+  };
+  // Pass our headers to the networkInterface so that we can set headers / provide cookie or token.
+  const networkInterface = getNetworkInterface(clientOptions, request.headers);
+
+  const apolloClient = createApolloClient({
+    request,
+    clientOptions,
+    networkInterface,
   });
-  const apolloClient = createApolloClient(networkInterface);
+
   // It's possible to disable SSR, which can be useful in development mode.
   // In this case traditional client side only rendering will occur.
   if (config('disableSSR')) {
@@ -54,9 +58,6 @@ export default (async function reactApplicationMiddleware(request, response) {
   // query for the results of the render.
   const reactRouterContext = {};
 
-  // Create the job context for our provider, this grants
-  // us the ability to track the resolved jobs to send back to the client.
-  // const jobContext = createJobContext();
   const initialState = {};
   // Create the redux store.
   const store = configureStore(apolloClient, initialState);
@@ -71,7 +72,13 @@ export default (async function reactApplicationMiddleware(request, response) {
       </StaticRouter>
     </AsyncComponentProvider>
   );
+
+  // Traverses entire React tree and determines which queries are needed to render, then
+  // fetches the data. It returns a promise which resolves when the data is ready in
+  // your Apollo Client store.
+  // @SEE http://dev.apollodata.com/react/server-side-rendering.html
   await getDataFromTree(app);
+
   // Pass our app into the react-async-component helper so that any async
   // components are resolved for the render.
   asyncBootstrapper(app).then(() => {

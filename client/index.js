@@ -1,13 +1,14 @@
-/* eslint-disable global-require */
+/* eslint-disable global-require, no-underscore-dangle */
+// we need a fetch polyfill for both the browser and server for Apollo.
 import 'isomorphic-fetch/fetch-npm-browserify';
 import React from 'react';
 import { render } from 'react-dom';
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 import asyncBootstrapper from 'react-async-bootstrapper';
 import { AsyncComponentProvider } from 'react-async-component';
-import { ApolloProvider, createBatchingNetworkInterface } from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
 import configureStore from '../shared/redux/configureStore';
-import createApolloClient from '../shared/createApolloClient';
+import { createApolloClient, getNetworkInterface } from '../shared/apollo';
 
 import './polyfills';
 
@@ -16,30 +17,22 @@ import DemoApp from '../shared/components/DemoApp';
 
 // Get the DOM Element that will host our React application.
 const container = document.querySelector('#app');
-// Apollo network interface
-const networkInterface = createBatchingNetworkInterface({
-  uri: 'http://localhost:1337/graphql',
-  batchInterval: 10,
-});
-networkInterface.use([
-  {
-    applyBatchMiddleware(req, next) {
-      // If headers don't exist for some reason
-      // create them.
-      if (!req.options.headers) {
-        req.options.headers = {};
-      }
-      next();
-    },
-  },
-]);
 
-const apolloClient = createApolloClient(networkInterface);
+// Apollo setup
+// all options described below
+// @see http://dev.apollodata.com/core/apollo-client-api.html#constructor
+const clientOptions = {
+  initialState: window.__APOLLO_STATE__,
+  connectToDevTools: true,
+};
+const networkInterface = getNetworkInterface();
+const apolloClient = createApolloClient({ clientOptions, networkInterface });
+
 // Create our Redux store.
 const store = configureStore(
   apolloClient,
   // Server side rendering would have mounted our state on this global.
-  window.__APOLLO_STATE__, // eslint-disable-line no-underscore-dangle
+  window.__APOLLO_STATE__,
 );
 
 // Does the user's browser support the HTML5 history API?
@@ -50,10 +43,6 @@ const supportsHistory = 'pushState' in window.history;
 // Get any rehydrateState for the async components.
 // eslint-disable-next-line no-underscore-dangle
 const asyncComponentsRehydrateState = window.__ASYNC_COMPONENTS_REHYDRATE_STATE__;
-
-// Get any "rehydrate" state sent back by the server
-// eslint-disable-next-line no-underscore-dangle
-const rehydrateState = window.__JOBS_STATE__;
 
 /**
  * Renders the given React Application component.

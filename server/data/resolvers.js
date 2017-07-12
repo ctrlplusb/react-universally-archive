@@ -1,4 +1,5 @@
-import posts from '../mockData';
+/* eslint-disable no-unused-vars */
+import posts from './mockData';
 
 const resolveFunctions = {
   PostList: {

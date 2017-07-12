@@ -35,13 +35,11 @@ const cspConfig = {
       // recognise that we have also provided a nonce configuration and
       // use the stricter rule.
       "'unsafe-inline'",
-      '//cdn.jsdelivr.net',
     ],
     styleSrc: [
       "'self'",
       // Webpack generates JS that loads our CSS, so this is needed:
       "'unsafe-inline'",
-      '//cdn.jsdelivr.net',
       'blob:',
     ],
   },
