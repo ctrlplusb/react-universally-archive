@@ -1,11 +1,11 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { shape, bool, object } from 'prop-types';
-import { graphql } from 'react-apollo';
+import { gql, graphql } from 'react-apollo';
 import Link from 'react-router-dom/Link';
 import Helmet from 'react-helmet';
 
-import POSTS_LIST_QUERY from './postList.graphql';
+// import POSTS_LIST_QUERY from './postList.graphql';
 
 class Posts extends Component {
   render() {
@@ -45,5 +45,16 @@ Posts.propTypes = {
     postList: object,
   }).isRequired,
 };
-
+export const POSTS_LIST_QUERY = gql`
+  query {
+    postList {
+      posts {
+        id
+        title
+        body
+        userId
+      }
+    }
+  }
+`;
 export default graphql(POSTS_LIST_QUERY)(Posts);

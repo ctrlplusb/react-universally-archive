@@ -1,9 +1,9 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { shape, bool, string, number } from 'prop-types';
-import { graphql } from 'react-apollo';
+import { gql, graphql } from 'react-apollo';
 import Helmet from 'react-helmet';
-import SINGLE_POST_QUERY from './singlePost.graphql';
+// import SINGLE_POST_QUERY from './singlePost.graphql';
 
 class Post extends Component {
   render() {
@@ -31,7 +31,16 @@ class Post extends Component {
     );
   }
 }
-
+export const SINGLE_POST_QUERY = gql`
+  query singlePost($id: Int!) {
+    singlePost(id: $id) {
+      id
+      title
+      userId
+      body
+    }
+  }
+`;
 export default graphql(SINGLE_POST_QUERY, {
   options: props => ({
     variables: {
