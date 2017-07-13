@@ -14,6 +14,7 @@ import Header from './Header';
 
 import AsyncHomeRoute from './AsyncHomeRoute';
 import AsyncCounterRoute from './AsyncCounterRoute';
+import AsyncPostsRoute from './AsyncPostsRoute';
 import AsyncAboutRoute from './AsyncAboutRoute';
 
 function DemoApp() {
@@ -21,7 +22,9 @@ function DemoApp() {
     <div style={{ padding: '2rem' }}>
       <Helmet>
         <html lang="en" />
-        <title>{config('htmlPage.defaultTitle')}</title>
+        <title>
+          {config('htmlPage.defaultTitle')}
+        </title>
         <meta name="application-name" content={config('htmlPage.defaultTitle')} />
         <meta name="description" content={config('htmlPage.description')} />
         <meta charSet="utf-8" />
@@ -116,6 +119,7 @@ function DemoApp() {
         <Switch>
           <Route exact path="/" component={AsyncHomeRoute} />
           <Route path="/counter" component={AsyncCounterRoute} />
+          <Route path="/posts" component={AsyncPostsRoute} />
           <Route path="/about" component={AsyncAboutRoute} />
           <Route component={Error404} />
         </Switch>

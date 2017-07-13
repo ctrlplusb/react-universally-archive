@@ -9,7 +9,6 @@ import { log } from '../utils';
 function createVendorDLL(bundleName, bundleConfig) {
   const dllConfig = config('bundles.client.devVendorDLL');
 
-  // $FlowFixMe
   const pkg = require(pathResolve(appRootDir.get(), './package.json'));
 
   const devDLLDependencies = dllConfig.include.sort();
@@ -58,7 +57,9 @@ function createVendorDLL(bundleName, bundleConfig) {
       log({
         title: 'vendorDLL',
         level: 'info',
-        message: `Vendor DLL build complete. The following dependencies have been included:\n\t-${devDLLDependencies.join('\n\t-')}\n`,
+        message: `Vendor DLL build complete. The following dependencies have been included:\n\t-${devDLLDependencies.join(
+          '\n\t-',
+        )}\n`,
       });
 
       const webpackConfig = webpackConfigFactory();

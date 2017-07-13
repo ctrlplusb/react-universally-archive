@@ -1,3 +1,9 @@
+### Feature Branch
+
+Note: This is a feature branch of `react-universally`. Please see the [`FEATURE_REDUX_OPINIONATED.md`](/docs/FEATURE_REDUX_OPINIONATED.md) for more information on this branch.
+
+---
+
 <p align='center'>
   <h1 align='center'>React, Universally</h1>
   <p align='center'><img width='150' src='https://raw.githubusercontent.com/ctrlplusb/assets/master/logos/react-universally.png' /></p>
