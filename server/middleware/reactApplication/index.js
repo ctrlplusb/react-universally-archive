@@ -1,15 +1,21 @@
-import React from 'react';
-import { renderToString, renderToStaticMarkup } from 'react-dom/server';
-import StaticRouter from 'react-router-dom/StaticRouter';
-import { AsyncComponentProvider, createAsyncContext } from 'react-async-component';
-import asyncBootstrapper from 'react-async-bootstrapper';
-import Helmet from 'react-helmet';
-import { ApolloProvider, getDataFromTree } from 'react-apollo';
-import configureStore from '../../../shared/redux/configureStore';
-import { createApolloClient, getNetworkInterface } from '../../../shared/apollo';
-import config from '../../../config';
-import DemoApp from '../../../shared/components/DemoApp';
-import ServerHTML from './ServerHTML';
+import React from "react";
+import { renderToString, renderToStaticMarkup } from "react-dom/server";
+import StaticRouter from "react-router-dom/StaticRouter";
+import {
+  AsyncComponentProvider,
+  createAsyncContext
+} from "react-async-component";
+import asyncBootstrapper from "react-async-bootstrapper";
+import Helmet from "react-helmet";
+import { ApolloProvider, getDataFromTree } from "react-apollo";
+import configureStore from "../../../shared/redux/configureStore";
+import {
+  createApolloClient,
+  getNetworkInterface
+} from "../../../shared/apollo";
+import config from "../../../config";
+import DemoApp from "../../../shared/components/DemoApp";
+import ServerHTML from "./ServerHTML";
 
 /**
  * React application middleware, supports server side rendering.
@@ -17,7 +23,7 @@ import ServerHTML from './ServerHTML';
 export default (async function reactApplicationMiddleware(request, response) {
   // Ensure a nonce has been provided to us.
   // See the server/middleware/security.js for more info.
-  if (typeof response.locals.nonce !== 'string') {
+  if (typeof response.locals.nonce !== "string") {
     throw new Error('A "nonce" value has not been attached to the response');
   }
   const nonce = response.locals.nonce;
@@ -26,23 +32,31 @@ export default (async function reactApplicationMiddleware(request, response) {
   // all options described below
   // @see http://dev.apollodata.com/core/apollo-client-api.html#constructor
   const clientOptions = {
-    ssrMode: true,
+    // SSR mode prevents both the server and the client requesting the same data --
+    // stops you from making two requests for the same data.
+    ssrMode: true
   };
+
+  // Network interface is responsible for fetching your data. It makes the request using
+  // the network connection.
+  // Using something like https://github.com/af/apollo-local-query or
+  // https://github.com/sysgears/persistgraphql-webpack-plugin allows you to perform
+  // queries without making a network request.
   // Pass our headers to the networkInterface so that we can set headers / provide cookie or token.
   const networkInterface = getNetworkInterface(clientOptions, request.headers);
 
   const apolloClient = createApolloClient({
     request,
     clientOptions,
-    networkInterface,
+    networkInterface
   });
 
   // It's possible to disable SSR, which can be useful in development mode.
   // In this case traditional client side only rendering will occur.
-  if (config('disableSSR')) {
-    if (process.env.BUILD_FLAG_IS_DEV === 'true') {
+  if (config("disableSSR")) {
+    if (process.env.BUILD_FLAG_IS_DEV === "true") {
       // eslint-disable-next-line no-console
-      console.log('==> Handling react route without SSR');
+      console.log("==> Handling react route without SSR");
     }
     // SSR is disabled so we will return an "empty" html page and
     // rely on the client to initialize and render the react application.
@@ -92,17 +106,19 @@ export default (async function reactApplicationMiddleware(request, response) {
         storeState={store.getState()}
         routerState={reactRouterContext}
         asyncComponentsState={asyncContext.getState()}
-      />,
+      />
     );
 
     // Check if the router context contains a redirect, if so we need to set
     // the specific status and redirect header and end the response.
     if (reactRouterContext.url) {
-      response.status(302).setHeader('Location', reactRouterContext.url);
+      response.status(302).setHeader("Location", reactRouterContext.url);
       response.end();
       return;
     }
 
-    response.status(reactRouterContext.status || 200).send(`<!DOCTYPE html>${html}`);
+    response
+      .status(reactRouterContext.status || 200)
+      .send(`<!DOCTYPE html>${html}`);
   });
 });

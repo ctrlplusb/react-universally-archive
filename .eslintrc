@@ -18,6 +18,7 @@
     // ignore linebreak style. the CRLF / LF endings wont matter
     // if a windows user correctly converts CRLF to LF upon commits otherwise
     // there are errors every line.
-    "linebreak-style": 0
+    "linebreak-style": 0,
+    "jsx-a11y/href-no-hash": 0
   }
 }

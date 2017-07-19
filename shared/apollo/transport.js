@@ -1,25 +1,26 @@
-import { createNetworkInterface } from 'react-apollo';
-import merge from 'lodash.merge';
-import config from '../../config';
-import { createHybridNetworkInterface } from './hybridNetworkInterface';
+import { createNetworkInterface } from "react-apollo";
+import merge from "lodash.merge";
+import config from "../../config";
+import { createHybridNetworkInterface } from "./hybridNetworkInterface";
 
 function createSimpleNetworkInterface(opts = {}, headers = {}) {
   const richerOpts = merge(
     {},
     {
-      uri: config('graphqlUri'),
+      uri: config("graphqlUri"),
       opts: {
-        headers,
-      },
+        headers
+      }
     },
-    opts,
+    opts
   );
 
   return createNetworkInterface(richerOpts);
 }
 
 function getNetworkInterface(opts = {}, headers = {}) {
-  return config('graphqlBatch')
+  // Enable or disable query batching within your config file.
+  return config("graphqlBatch")
     ? createHybridNetworkInterface(opts, headers)
     : createSimpleNetworkInterface(opts, headers);
 }
