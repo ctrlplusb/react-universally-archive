@@ -113,24 +113,6 @@ const values = {
   // These extensions are tried when resolving src files for our bundles..
   bundleSrcTypes: ['js', 'jsx', 'json'],
 
-  // Additional asset types to be supported for our bundles.
-  // i.e. you can import the following file types within your source and the
-  // webpack bundling process will bundle them with your source and create
-  // URLs for them that can be resolved at runtime.
-  bundleAssetTypes: [
-    'jpg',
-    'jpeg',
-    'png',
-    'gif',
-    'ico',
-    'eot',
-    'svg',
-    'ttf',
-    'woff',
-    'woff2',
-    'otf',
-  ],
-
   // What should we name the json output file that webpack generates
   // containing details of all output files for a bundle?
   bundleAssetsFileName: 'assets.json',
