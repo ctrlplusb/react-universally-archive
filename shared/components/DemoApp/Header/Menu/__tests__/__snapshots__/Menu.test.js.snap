@@ -34,5 +34,13 @@ exports[`<Home /> renders 1`] = `
       About
     </Link>
   </li>
+  <li>
+    <Link
+      replace={false}
+      to="/foo"
+    >
+      Foo
+    </Link>
+  </li>
 </ul>
 `;
