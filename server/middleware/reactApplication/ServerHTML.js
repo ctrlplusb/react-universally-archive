@@ -6,7 +6,8 @@
 /* eslint-disable react/no-danger */
 /* eslint-disable react/no-array-index-key */
 
-import React, { Children, PropTypes } from 'react';
+import React, { Children } from 'react';
+import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
 
 import config from '../../../config';
@@ -113,14 +114,14 @@ function ServerHTML(props) {
     <HTML
       htmlAttributes={ifElse(helmet)(() => helmet.htmlAttributes.toComponent(), null)}
       headerElements={headerElements.map((x, idx) =>
-        <KeyedComponent key={idx}>
+        (<KeyedComponent key={idx}>
           {x}
-        </KeyedComponent>,
+        </KeyedComponent>),
       )}
       bodyElements={bodyElements.map((x, idx) =>
-        <KeyedComponent key={idx}>
+        (<KeyedComponent key={idx}>
           {x}
-        </KeyedComponent>,
+        </KeyedComponent>),
       )}
       appBodyString={reactAppString}
     />
