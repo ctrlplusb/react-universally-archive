@@ -1,17 +1,16 @@
 import React from 'react';
-import Helmet from 'react-helmet';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import { AsyncComponentProvider, createAsyncContext } from 'react-async-component';
-import asyncBootstrapper from 'react-async-bootstrapper';
 import { JobProvider, createJobContext } from 'react-jobs';
+import asyncBootstrapper from 'react-async-bootstrapper';
 import { Provider } from 'react-redux';
+import Helmet from 'react-helmet';
 import configureStore from '../../../shared/redux/configureStore';
 
 import config from '../../../config';
-
-import ServerHTML from './ServerHTML';
 import DemoApp from '../../../shared/components/DemoApp';
+import ServerHTML from './ServerHTML';
 
 /**
  * React application middleware, supports server side rendering.
