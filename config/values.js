@@ -199,6 +199,7 @@ const values = {
           'react-dom',
           'react-helmet',
           'react-router-dom',
+          'styled-components',
         ],
 
         // The name of the vendor DLL.
