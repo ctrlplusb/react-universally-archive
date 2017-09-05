@@ -9,6 +9,47 @@ I'll map them as follows:
   - Minor: New features or changes to the build tools. Could contain some things that are traditionally know as breaking changes, however, I believe the upgrade path to minor.
   - Patch: Small(ish) fixes/restructuring that I expect will take minimal effort to merge in.
 
+# [13.0.0] - 2017-04-05
+
+### BREAKING
+
+ - Renames the 'development' command to 'develop'.
+ - Big folder structure refactor, moving items from src/* into the root of the project.
+ - Renames the CONF_ENV variable to DEPLOYMENT for targetting of .env.{environment} environment files.
+ - Upgrades to `react-router` v4.
+ - Replaces `code-split-component` with `react-async-component`
+ - Complete restructure of the DefinePlugin special flags, they have been prefixed with "BUILD_FLAG_" to make them more obvious when used in the code. This also helps us distinguish these build-time values from other runtime provided process.env values.
+ - Removes cross-env and refactors the script commands.  You can assign NODE_ENV as and when you need now (for example, to target a .env.production environment configuration file).
+ - Renamed environment variables:
+   - `SERVER_PORT` to `PORT`
+   - `SERVER_HOST` to `HOST`
+   - `CLIENT_DEVSERVER_PORT` to `CLIENT_DEV_PORT`
+ - Renames the `nodeBundlesIncludeNodeModuleFileTypes` config property to `nodeExternalsFileTypeWhitelist`
+ - Refactors the server and serviceworker offline page generation. We now use a set of React components (`ServerHTML` and `HTML`) to manage our HTML in a uniform fashion.
+ - Refactors the client configuration filter rule to be contained within the main configuration and moves the configuration object creation into the server middleware.
+ - Refactors the config folder in various ways.  Cleaning up, restructuring, etc.
+ - Renames the `environmentVars` file and helpers.
+ - Moves all the HTML head tags into the DemoApp helmet configuration.
+
+### Changed
+
+ - All server/client/shared code all use the shared config helper.
+ - Updated dependencies, including to the latest Webpack official 2 release.
+
+### Added
+
+ - New babel plugins to optimise React production build performance.
+ - Adds new icon sets.
+ - Prettier
+ - Some basic global styling via milligram
+
+### Fixed
+
+ - Chrome favicon request issue.
+ - Cleans up the package scripts.
+ - Service worker would fail if a subfolder was added to the public folder.
+ - Tons of other things. :)
+
 # [12.0.0] - 2017-01-09
 
 ### BREAKING
