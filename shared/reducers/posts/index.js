@@ -19,9 +19,7 @@ export function getById(state, id) {
 }
 
 export function getAll(state) {
-  return FromAll
-    .getAll(state.all)
-    .map(id => getById(state, id));
+  return FromAll.getAll(state.all).map(id => getById(state, id));
 }
 
 // -----------------------------------------------------------------------------

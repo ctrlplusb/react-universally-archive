@@ -9,9 +9,7 @@ const defaultState = [];
 function all(state = defaultState, action) {
   if (action.type === 'FETCHED_POST') {
     const post = action.payload;
-    return state.find(x => post.id === x)
-      ? state
-      : [...state, action.payload.id];
+    return state.find(x => post.id === x) ? state : [...state, action.payload.id];
   }
 
   return state;
@@ -27,4 +25,4 @@ export function getAll(state) {
 // -----------------------------------------------------------------------------
 // EXPORTED REDUCER
 
-export default (all);
+export default all;

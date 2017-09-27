@@ -57,7 +57,9 @@ function createVendorDLL(bundleName, bundleConfig) {
       log({
         title: 'vendorDLL',
         level: 'info',
-        message: `Vendor DLL build complete. The following dependencies have been included:\n\t-${devDLLDependencies.join('\n\t-')}\n`,
+        message: `Vendor DLL build complete. The following dependencies have been included:\n\t-${devDLLDependencies.join(
+          '\n\t-',
+        )}\n`,
       });
 
       const webpackConfig = webpackConfigFactory();

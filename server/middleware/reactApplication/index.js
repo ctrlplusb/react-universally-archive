@@ -38,7 +38,7 @@ export default function reactApplicationMiddleware(request, response) {
   }
 
   // Create a context for our AsyncComponentProvider.
-  const asyncContext = createAsyncContext();
+  const asyncComponentsContext = createAsyncContext();
 
   // Create a context for <StaticRouter>, which will allow us to
   // query for the results of the render.
@@ -53,7 +53,7 @@ export default function reactApplicationMiddleware(request, response) {
 
   // Declare our React application.
   const app = (
-    <AsyncComponentProvider asyncContext={asyncContext}>
+    <AsyncComponentProvider asyncContext={asyncComponentsContext}>
       <JobProvider jobContext={jobContext}>
         <StaticRouter location={request.url} context={reactRouterContext}>
           <Provider store={store}>
@@ -69,6 +69,7 @@ export default function reactApplicationMiddleware(request, response) {
   asyncBootstrapper(app).then(() => {
     const appString = renderToString(app);
 
+    // Generate the html response.
     const html = renderToStaticMarkup(
       <ServerHTML
         reactAppString={appString}
@@ -77,7 +78,7 @@ export default function reactApplicationMiddleware(request, response) {
         storeState={store.getState()}
         routerState={reactRouterContext}
         jobsState={jobContext.getState()}
-        asyncComponentsState={asyncContext.getState()}
+        asyncComponentsState={asyncComponentsContext.getState()}
       />,
     );
 
@@ -89,6 +90,15 @@ export default function reactApplicationMiddleware(request, response) {
       return;
     }
 
-    response.status(reactRouterContext.status || 200).send(`<!DOCTYPE html>${html}`);
+    response
+      .status(
+        reactRouterContext.missed
+          ? // If the renderResult contains a "missed" match then we set a 404 code.
+            // Our App component will handle the rendering of an Error404 view.
+            404
+          : // Otherwise everything is all good and we send a 200 OK status.
+            200,
+      )
+      .send(`<!DOCTYPE html>${html}`);
   });
 }

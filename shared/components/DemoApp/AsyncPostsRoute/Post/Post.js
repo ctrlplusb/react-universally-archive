@@ -21,7 +21,9 @@ export function Post({ post }) {
     <div>
       <Helmet title={`Posts - ${title}`} />
 
-      <h1>{title}</h1>
+      <h1>
+        {title}
+      </h1>
       <div>
         {body}
       </div>
@@ -68,7 +70,8 @@ export default compose(
       return fetchPost(match.params.id);
     },
     // Any time the post id changes we need to trigger the work.
-    shouldWorkAgain: (prevProps, nextProps) => prevProps.match.params.id !== nextProps.match.params.id,
+    shouldWorkAgain: (prevProps, nextProps) =>
+      prevProps.match.params.id !== nextProps.match.params.id,
   }),
 )(Post);
 

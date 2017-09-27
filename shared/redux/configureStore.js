@@ -17,13 +17,13 @@ function configureStore(initialState) {
     // @see https://github.com/zalmoxisus/redux-devtools-extension
     // We only want this enhancer enabled for development and when in a browser
     // with the extension installed.
-    process.env.NODE_ENV === 'development'
-      && typeof window !== 'undefined'
-      && typeof window.devToolsExtension !== 'undefined'
-      // Call the brower extension function to create the enhancer.
-      ? window.devToolsExtension()
-      // Else we return a no-op function.
-      : f => f,
+    process.env.NODE_ENV === 'development' &&
+    typeof window !== 'undefined' &&
+    typeof window.devToolsExtension !== 'undefined'
+      ? // Call the brower extension function to create the enhancer.
+        window.devToolsExtension()
+      : // Else we return a no-op function.
+        f => f,
   );
 
   const store = initialState
