@@ -56,12 +56,12 @@ export default function reactApplicationMiddleware(request, response) {
   // components are resolved for the render.
   asyncBootstrapper(app).then(() => {
     const appString = renderToString(sheet.collectStyles(app));
-    const styleTags = sheet.getStyleTags();
+    const styleElement = sheet.getStyleElement();
     // Generate the html response.
     const html = renderToStaticMarkup(
       <ServerHTML
         reactAppString={appString}
-        styleTags={styleTags}
+        styleElement={styleElement}
         nonce={nonce}
         helmet={Helmet.rewind()}
         asyncComponentsState={asyncComponentsContext.getState()}

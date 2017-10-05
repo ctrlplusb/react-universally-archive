@@ -40,7 +40,7 @@ function scriptTag(jsFilePath) {
 // COMPONENT
 
 function ServerHTML(props) {
-  const { asyncComponentsState, helmet, styleTags, nonce, reactAppString } = props;
+  const { asyncComponentsState, helmet, styleElement, nonce, reactAppString } = props;
 
   // Creates an inline script definition that is protected by the nonce.
   const inlineScript = body =>
@@ -105,7 +105,7 @@ function ServerHTML(props) {
         </KeyedComponent>),
       )}
       appBodyString={reactAppString}
-      styleTags={styleTags}
+      styleElement={styleElement}
     />
   );
 }
@@ -117,6 +117,8 @@ ServerHTML.propTypes = {
   helmet: PropTypes.object,
   nonce: PropTypes.string,
   reactAppString: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  styleElement: PropTypes.array,
 };
 
 // EXPORT

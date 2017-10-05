@@ -8,12 +8,13 @@ import PropTypes from 'prop-types';
  * The is the HTML shell for our React Application.
  */
 function HTML(props) {
-  const { htmlAttributes, headerElements, bodyElements, appBodyString } = props;
+  const { htmlAttributes, headerElements, bodyElements, appBodyString, styleElement } = props;
 
   return (
     <html {...htmlAttributes}>
       <head>
         {headerElements}
+        {styleElement}
       </head>
       <body>
         <div id="app" dangerouslySetInnerHTML={{ __html: appBodyString }} />
@@ -29,6 +30,8 @@ HTML.propTypes = {
   headerElements: PropTypes.node,
   bodyElements: PropTypes.node,
   appBodyString: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  styleElement: PropTypes.array,
 };
 
 HTML.defaultProps = {
@@ -36,6 +39,7 @@ HTML.defaultProps = {
   headerElements: null,
   bodyElements: null,
   appBodyString: '',
+  styleElement: null,
 };
 
 // EXPORT
