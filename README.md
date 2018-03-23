@@ -1,3 +1,8 @@
+> WARNING!
+> This is a temporary "copy" of `react-universally` so as to maintain all the existing feature branches that were on there just in case anyone was finding them useful. A massive cull is about to occur on them.
+
+----
+
 <p align='center'>
   <h1 align='center'>React, Universally</h1>
   <p align='center'><img width='150' src='https://raw.githubusercontent.com/ctrlplusb/assets/master/logos/react-universally.png' /></p>
